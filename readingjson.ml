@@ -56,5 +56,5 @@ let get_texts t =
 
 let rec print_convo t=
   match t with
-  |[]-> output_convo_line "" ""
-  |h::t-> 
+  |[]->print_endline ""
+  |x::xs-> output_convo_line x; (print_convo xs)
