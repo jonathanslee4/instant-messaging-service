@@ -1,9 +1,9 @@
 type object_phrase = string list
-
+type phrase = string
 type command = 
-  | Engage of object_phrase
-  | Send of object_phrase
-  | Username of object_phrase
+  | Engage of phrase
+  | Send of phrase
+  | Username of phrase
   | Back
 
 exception Empty
@@ -27,7 +27,7 @@ let striplist str =
 let headify slist = 
   match slist with
   | [] -> 0
-  | hd :: tl -> hd
+  | hd :: tl -> slist
 
 let parse str current_menu =
   match striplist str with
