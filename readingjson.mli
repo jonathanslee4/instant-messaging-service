@@ -1,6 +1,6 @@
 type t
 
-type convo = {
+type message = {
   sent_by:string;
   text:string;
 }
