@@ -1,4 +1,3 @@
-type object_phrase = string list
 type phrase = string
 type command = 
   | Engage of phrase
@@ -24,35 +23,24 @@ let striplist str =
   if str = "" then raise Empty else
     str |> String.split_on_char ' ' |> remove_empty
 
+(** headify [slist] is the stringlist whose head is the head of slist, and whose
+    tail stores the string concatenation of the tail of slist. *)
 let headify slist = 
   match slist with
-  | [] -> 0
-  | hd :: tl -> slist
+  | [] -> raise Empty
+  | hd :: tl -> hd :: [String.concat " " tl]
 
 let parse str current_menu =
-  match striplist str with
+  match striplist str |> headify with
   | [] -> raise Empty
-  | hd :: tl ->
-    if current_menu = Signin then 
-      if isValid hd then Username tl
-
-
-
-
-
-
-          if hd <> "" && hd <> "go" && hd <> "score" && hd <> "take" 
-             && hd <> "inventory" && hd <> "drop" && hd <> "use"
-          then raise Malformed else
-          if (hd = "quit" || hd = "score" || hd = "inventory") && tl <> [] 
-          then raise Malformed else
-          if (hd = "go" || hd = "take" || hd = "drop" || hd = "use") && tl = [] then 
-            raise Malformed else 
-          if hd = "quit" then Quit else
-          if hd = "score" then Score else
-          if hd = "take" then Take tl else
-          if hd = "inventory" then Inventory else
-          if hd = "drop" then Drop tl else
-          if hd = "use" then Use tl else
-            Go tl
-
+  | hd :: tl -> 
+    if current_menu = Login then 
+      (if tl <> [] then raise Malformed else
+         Username hd) else
+    if current_menu = Plaza then
+      (if tl <> [] then raise Malformed else
+       if hd = "/back" then Back else
+         Engage hd)
+      (* Current menus is Chat *)     
+    else if hd = "/back" then Back else
+      Send (String.concat " " (hd :: tl))
