@@ -1,6 +1,7 @@
 "Resource: /home/vagrant/cs3110-json/jmodule.ml": "s\150\004\143\192C\191\197\201\130\162\2341\017\156$"
 "Resource: /home/vagrant/cs3110-json/test.ml": "n\003\176\163%\017l\027\178]\006\216\023\232\145["
 "Rule: ocaml dependencies ml (%=test )": "\189\207\015+z\160\174\188p8\132Z!\127\202<"
+"Resource: /Users/jonathan/Desktop/3110/cs3110-ims/readingjson.mli": "o\015\139\195\2538\180\229R\187\241(y.'\028"
 "Rule: ocaml: mli -> cmi (%=jmodule )": "\254VQ\182\179\169\255\136\233\217\253\230\"\130\249\225"
 "Rule: ocaml dependencies mli (%=readingjson )": "\027\242\180\1950\0064I|\229qu\155\238\177_"
 "Resource: /home/vagrant/cs3110-json/readingjson.mli": "BK\231\021t\161\012\196\002\248%\2298\1289\220"

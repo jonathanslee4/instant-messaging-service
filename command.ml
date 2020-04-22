@@ -1,3 +1,4 @@
+
 type phrase = string
 type command = 
   | Engage of phrase
