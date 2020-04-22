@@ -52,10 +52,10 @@ let create (filename:string) =
 (* what happens when file already exists *)
 let existing_convo (sent_by:string) (text:string) (id:string)=
   let file_contents = entire_file (json_creator id) in
-  let penult = penultimate_index file_contents in
-  let first = Str.string_before file_contents (penult+1) in
-  let second = ",{\"sent_by\":\""^sent_by^"\",\"text\":\""^text^"\"}" in
-  let third = "]}" in
+  let bracket_char= String.index file_contents '[' in
+  let first = Str.string_before file_contents (bracket_char+1) in
+  let third = Str.string_after file_contents (bracket_char+1) in
+  let second = "{\"sent_by\":\""^sent_by^"\",\"text\":\""^text^"\"}," in
   save (json_creator id) (first^second^third)
 
 (* what happens when a new file needs to be made *)
