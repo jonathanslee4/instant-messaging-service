@@ -6,6 +6,7 @@
 "Resource: /home/vagrant/cs3110-json/readingjson.mli": "BK\231\021t\161\012\196\002\248%\2298\1289\220"
 "Rule: ocaml: ml & cmi -> cmo (%=readingjson )": "T\166\004\006K\248\216\214\023\217L\0293[Z\198"
 "Rule: ocaml dependencies ml (%=readingjson )": "\186\153\142J\146\160\201\185\238a\t\251W\234\149\184"
+"Resource: /Users/jessicayuan/Desktop/Cornell Github/cs3110-final/cs3110-ims/readingjson.mli": "BK\231\021t\161\012\196\002\248%\2298\1289\220"
 "Rule: ocaml dependencies ml (%=jmodule )": "\248\000\\\254\2214V\155\178\201\144\132\199\160\230v"
 "Rule: ocaml: ml & cmi -> cmo (%=jmodule )": "\174\209<O\227\246\190gy\140\184\129&\157tK"
 "Rule: ocaml: mli -> cmi (%=readingjson )": "&\152q\026\236\209\190\243\180Q\194\250\167\186\131\198"

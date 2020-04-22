@@ -19,7 +19,7 @@ type t = {
   (* new_user : username ; *)
 }
 
-let init_state adv = {
+let init_state rdr = {
   current_menu = Login;
   current_json = Reader.getjson;
   recent_texts = []; 
