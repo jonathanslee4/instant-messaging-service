@@ -1,4 +1,3 @@
-open State
 
 type phrase = string
 type command = 

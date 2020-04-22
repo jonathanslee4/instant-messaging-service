@@ -10,19 +10,19 @@ type text = {
 type menu = 
   | Login
   | Plaza
-  | Chat of username
-
+  | Chat of string
 type t = {
   current_menu : menu;
-  current_json : Reader.t;
-  recent_texts : text list;
+  current_chat : Readingjson.t;
+  current_contacts : Readingjson.t.contacts
   (* new_user : username ; *)
 }
 
 let init_state rdr = {
   current_menu = Login;
-  current_json = Reader.getjson;
-  recent_texts = []; 
+  current_chat = Reader.getjson;
+  current_contacts = 
+    recent_texts = []; 
 }
 
 let get_current_menu st = 

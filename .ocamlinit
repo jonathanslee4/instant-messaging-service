@@ -1,3 +1,4 @@
 #require "oUnit";;
 #require "yojson";;
 #require "ANSITerminal";;
+#require "ppx_deriving_yojson";;

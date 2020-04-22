@@ -27,11 +27,11 @@ let from_json json (name1:string) (name2:string)={
   convo=json |> member (Jmodule.id_creator name1 name2) |> to_list |> make_message_list [];}
 
 (* helper function: takes sent_by and text and displays message *)
-let output_convo_line sent_by text=
+let output_convo_line message=
   ANSITerminal.(print_string [yellow]
-                  (sent_by^": "));
+                  (message.sent_by^": "));
    ANSITerminal.(print_string [green]
-                  (text^"\n"))  
+                  (message.text^"\n"))  
 
 (* ITERATE THROUGH SENT BY AND TEXT TO NOW
 PRINT OUT EACH ELEMENT OF LISTS *)
@@ -54,6 +54,7 @@ let get_texts t =
     |[]-> output_convo_line "" ""
     |x::xs-> output_convo_line h x; print_convo t xs); print_convo *)
 
-(* let rec print_convo t=
+let rec print_convo t=
   match t with
-  |[]-> *)
+  |[]->print_endline ""
+  |x::xs-> output_convo_line x; (print_convo xs)
