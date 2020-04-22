@@ -11,6 +11,13 @@ type t = {
   convo:message list
 }
 
+type convo = message list
+
+type newt = {
+  all_convos : convo list;
+  contacts : string list;
+}
+
 let make_message mess ={
   sent_by = mess |> member "sent_by" |> to_string;
   text = mess |> member "text" |> to_string;
@@ -22,7 +29,7 @@ let rec make_message_list mess_list json_list=
   |h::t-> make_message_list ((make_message h)::mess_list) t
 
 (* description: takes in json script and pipelines script to string attributes,
-requires: json is valid json script *)
+   requires: json is valid json script *)
 let from_json json (name1:string) (name2:string)={
   convo=json |> member (Jmodule.id_creator name1 name2) |> to_list |> make_message_list [];}
 
@@ -30,11 +37,11 @@ let from_json json (name1:string) (name2:string)={
 let output_convo_line message=
   ANSITerminal.(print_string [yellow]
                   (message.sent_by^": "));
-   ANSITerminal.(print_string [green]
+  ANSITerminal.(print_string [green]
                   (message.text^"\n"))  
 
 (* ITERATE THROUGH SENT BY AND TEXT TO NOW
-PRINT OUT EACH ELEMENT OF LISTS *)
+   PRINT OUT EACH ELEMENT OF LISTS *)
 (* get sent_by as list *)
 let get_sent_bys t = 
   let sent_list = t.convo in
@@ -47,9 +54,9 @@ let get_texts t =
 
 (* iterate through both and print out as you iterate *)
 (* let rec print_convo (sent_list:string list) (text_list:string list)=
-  match sent_list with
-  |[]-> output_convo_line "" ""
-  |h::t-> 
+   match sent_list with
+   |[]-> output_convo_line "" ""
+   |h::t-> 
     (match text_list with
     |[]-> output_convo_line "" ""
     |x::xs-> output_convo_line h x; print_convo t xs); print_convo *)

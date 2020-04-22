@@ -48,8 +48,6 @@ val current_score : t -> int
     Effects: none.  [go] is not permitted to do any printing. *)
 val go : Adventure.exit_name -> Adventure.t -> t -> result
 
-(* END DO NOT CHANGE
- **********************************************************************)
 
 (** [get_state ex adv st] is the new game state after the adventurer
     has attempted movement through [ex] in [st] and [adv]  *)
