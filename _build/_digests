@@ -1,18 +1,11 @@
 "Resource: /home/vagrant/cs3110-json/jmodule.ml": "s\150\004\143\192C\191\197\201\130\162\2341\017\156$"
 "Resource: /home/vagrant/cs3110-json/test.ml": "n\003\176\163%\017l\027\178]\006\216\023\232\145["
 "Rule: ocaml dependencies ml (%=test )": "\189\207\015+z\160\174\188p8\132Z!\127\202<"
-<<<<<<< HEAD
-"Rule: ocaml: mli -> cmi (%=jmodule )": "3?\242q<\nq\213\195\170\nv\212\151\157;"
-"Rule: ocaml dependencies mli (%=readingjson )": "\027\242\180\1950\0064I|\229qu\155\238\177_"
-"Resource: /home/vagrant/cs3110-json/readingjson.mli": "BK\231\021t\161\012\196\002\248%\2298\1289\220"
-"Rule: ocaml: ml & cmi -> cmo (%=readingjson )": "\161\219-\2265\198\181\233\001\191\249\198Z\016nM"
-=======
 "Resource: /Users/jonathan/Desktop/3110/cs3110-ims/readingjson.mli": "o\015\139\195\2538\180\229R\187\241(y.'\028"
 "Rule: ocaml: mli -> cmi (%=jmodule )": "\254VQ\182\179\169\255\136\233\217\253\230\"\130\249\225"
 "Rule: ocaml dependencies mli (%=readingjson )": "\027\242\180\1950\0064I|\229qu\155\238\177_"
 "Resource: /home/vagrant/cs3110-json/readingjson.mli": "BK\231\021t\161\012\196\002\248%\2298\1289\220"
 "Rule: ocaml: ml & cmi -> cmo (%=readingjson )": "O\222\029\002=H\166e\020\155XY\230\\\193\163"
->>>>>>> f66d9f32394dc1ce875c05a1930ac59042f1ee6c
 "Rule: ocaml dependencies ml (%=readingjson )": "f\196\209\167\140\208\n80Yi\198I\229\232X"
 "Resource: /home/vagrant/cs3110-ims/readingjson.mli": "o\015\139\195\2538\180\229R\187\241(y.'\028"
 "Rule: ocaml dependencies ml (%=jmodule )": "\248\000\\\254\2214V\155\178\201\144\132\199\160\230v"
