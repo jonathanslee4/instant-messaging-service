@@ -11,7 +11,7 @@ val entire_file : string -> string
 
 val penultimate_index : string -> int
 
-val existing_convo : string -> string -> string -> unit
+val existing_convo : string -> string -> string -> unit*unit
 
 val new_convo : string -> string -> string -> unit
 
