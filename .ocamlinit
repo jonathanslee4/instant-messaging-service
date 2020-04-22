@@ -2,3 +2,4 @@
 #require "yojson";;
 #require "ANSITerminal";;
 #require "ppx_deriving_yojson";;
+#directory "_build";;

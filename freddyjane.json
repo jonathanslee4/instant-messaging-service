@@ -1,6 +1,12 @@
 {
-  "freddyjane": [
+  "text history": [
     {
       "sent_by": "freddy",
       "text": "hi jane"
-    },{"sent_by":"freddy","text":"hi jane"}]}
+    },
+    {
+      "sent_by": "freddy",
+      "text": "hi jane"
+    }
+  ]
+}

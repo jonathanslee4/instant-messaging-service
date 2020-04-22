@@ -5,15 +5,9 @@
 "Rule: ocaml: mli -> cmi (%=jmodule )": "\254VQ\182\179\169\255\136\233\217\253\230\"\130\249\225"
 "Rule: ocaml dependencies mli (%=readingjson )": "\027\242\180\1950\0064I|\229qu\155\238\177_"
 "Resource: /home/vagrant/cs3110-json/readingjson.mli": "BK\231\021t\161\012\196\002\248%\2298\1289\220"
-<<<<<<< HEAD
-"Rule: ocaml: ml & cmi -> cmo (%=readingjson )": "T\166\004\006K\248\216\214\023\217L\0293[Z\198"
-"Rule: ocaml dependencies ml (%=readingjson )": "\186\153\142J\146\160\201\185\238a\t\251W\234\149\184"
-"Resource: /Users/jessicayuan/Desktop/Cornell Github/cs3110-final/cs3110-ims/readingjson.mli": "BK\231\021t\161\012\196\002\248%\2298\1289\220"
-=======
 "Rule: ocaml: ml & cmi -> cmo (%=readingjson )": "O\222\029\002=H\166e\020\155XY\230\\\193\163"
 "Rule: ocaml dependencies ml (%=readingjson )": "f\196\209\167\140\208\n80Yi\198I\229\232X"
 "Resource: /home/vagrant/cs3110-ims/readingjson.mli": "o\015\139\195\2538\180\229R\187\241(y.'\028"
->>>>>>> b11046d373517e4e75f4df87236630e9c60833e6
 "Rule: ocaml dependencies ml (%=jmodule )": "\248\000\\\254\2214V\155\178\201\144\132\199\160\230v"
 "Rule: ocaml: ml & cmi -> cmo (%=jmodule )": "\174\209<O\227\246\190gy\140\184\129&\157tK"
 "Rule: ocaml: mli -> cmi (%=readingjson )": "h\217S\n\240\220<\183\b<?\229\156y\145\145"
