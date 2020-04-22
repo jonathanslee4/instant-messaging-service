@@ -2,20 +2,17 @@ open Yojson
 open Yojson.Basic.Util
 open Jmodule
 
+(** The type of messages. *)
 type message = {
-  sent_by:string;
-  text:string;
+  sent_by : string;
+  text : string;
 }
 
-type t = {
-  convo:message list
-}
-
-
+(** The type of a single conversation. *)
 type convo = message list
 
-type newt = {
-  all_convos : convo list;
+type t = {
+  conversations : convo list;
   contacts : string list;
 }
 

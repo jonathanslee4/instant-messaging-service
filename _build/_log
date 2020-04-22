@@ -1,7 +1,2 @@
 ### Starting build.
-# Target: readingjson.mli.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), extension:mli, file:readingjson.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules readingjson.mli > readingjson.mli.depends
-+ ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules readingjson.mli > readingjson.mli.depends
-ocamlfind: Package `ppx_deriving_yojson' not found
-Command exited with code 2.
 # Compilation unsuccessful.
