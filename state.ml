@@ -80,7 +80,7 @@ let next_menu input st =
          Valid {
            current_menu = Chat; 
            current_chat = 
-             st.current_chat;
+             st.current_chat; (* The current_chat is empty *)
            current_contacts = st.current_contacts;
            current_user = st.current_user; } )
     else Invalid
