@@ -4,6 +4,7 @@ ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package
 # Target: main.cmi, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), byte, compile, extension:mli, file:main.mli, interf, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -o main.cmi main.mli # cached
 # Target: main.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), extension:ml, file:main.ml, ocaml, ocamldep, quiet, traverse }
+<<<<<<< HEAD
 ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules main.ml > main.ml.depends
 # Target: command.mli.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), extension:mli, file:command.mli, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules command.mli > command.mli.depends
@@ -31,3 +32,9 @@ Error: This expression has type State.result
        but an expression was expected of type State.t
 Command exited with code 2.
 # Compilation unsuccessful.
+=======
+ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules main.ml > main.ml.depends # cached
+# Target: main.cmo, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -o main.cmo main.ml # cached
+# Compilation successful.
+>>>>>>> fb336eb4e62c85001b4f4b578abe203dab05463f

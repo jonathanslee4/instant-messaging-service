@@ -65,31 +65,48 @@ let next_menu input st =
         current_user = input; }
     else Invalid (** UPDATE in MS2: should go to a create account page *)
   | Plaza ->
-    if (is_existing_username input st) then 
-      let filename = 
-        st.current_user |> Jmodule.id_creator input |> Jmodule.json_creator in
-      (Jmodule.editing_json st.current_user input filename;
-       Valid {
-         current_menu = Chat; 
-         current_chat = 
-           filename |> Yojson.Basic.from_file |> Readingjson.convo_from_json;
-         current_contacts = st.current_contacts;
-         current_user = st.current_user; } )
-    else Invalid
-  | Chat -> 
     if (input = "/back") then 
       Valid {
         current_menu = Login; 
         current_chat = [];
         current_contacts = st.current_contacts;
         current_user = "";
+      } else 
+    if (is_existing_username input st) then 
+      let filename = 
+        st.current_user |> Jmodule.id_creator input |> Jmodule.json_creator in
+      (if (Sys.file_exists filename) then
+         Valid {
+           current_menu = Chat; 
+           current_chat = 
+             filename |> Yojson.Basic.from_file |> Readingjson.convo_from_json;
+           current_contacts = st.current_contacts;
+           current_user = st.current_user; }
+       else 
+         Valid {
+           current_menu = Chat; 
+           current_chat = 
+             st.current_chat;
+           current_contacts = st.current_contacts;
+           current_user = st.current_user; } )
+    else Invalid
+  | Chat -> 
+    if (input = "/back") then 
+      Valid {
+        current_menu = Plaza; 
+        current_chat = [];
+        current_contacts = st.current_contacts;
+        current_user = st.current_user;
       }
     else 
-      let filename = st.current_user |> Jmodule.id_creator input |> Jmodule.json_creator in
-      (Jmodule.editing_json st.current_user input filename;
+      let file = st.current_user |> Jmodule.id_creator input in
+      (Jmodule.editing_json st.current_user input file;
        Valid {
-         current_menu = st.current_menu; 
-         current_chat = filename |> Yojson.Basic.from_file |> Readingjson.convo_from_json;
+         current_menu = Chat; 
+         current_chat = file 
+                        |> Jmodule.json_creator 
+                        |> Yojson.Basic.from_file 
+                        |> Readingjson.convo_from_json;
          current_contacts = st.current_contacts;
          current_user = st.current_user; } )
 
