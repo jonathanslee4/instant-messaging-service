@@ -20,7 +20,7 @@ type message
 (** [init_state a] is the initial state of the game when playing adventure [a]. 
     In that state the adventurer is currently located in the starting room,
     and they have visited only that room. *)
-val init_state : Yojson.Basic.t -> t
+val init_state : t
 
 (** The type representing the result of an attempted movement. *)
 type result = Valid of t | Invalid
