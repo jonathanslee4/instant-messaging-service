@@ -23,7 +23,6 @@ let print_login_window =
             exit 0
 
 
-
 let run_program input = 
   if input <> "y" then exit 0 else 
     let state = State.init_state in
@@ -35,7 +34,7 @@ let main () =
   ANSITerminal.(print_string [magenta]
                   "\n\nWelcome to our instant messaging system.\n");
   print_endline "Would you like to connect with new people? Type 
-  'y' to continue! \n";
+   'y' to continue! \n";
   print_string  "> ";
   match read_line () with
   | "" -> exit 0

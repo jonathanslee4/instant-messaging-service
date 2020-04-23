@@ -20,7 +20,7 @@ build:
 test:
 	$(OCAMLBUILD) -tag 'debug' $(TEST) && ./$(TEST)
 
-play:
+ims:
 	$(OCAMLBUILD) $(MAIN) && ./$(MAIN)
 	
 docs: docs-public docs-private

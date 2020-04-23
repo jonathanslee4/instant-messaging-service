@@ -1,4 +1,3 @@
-
 type message 
 type convo = message list
 type contacts = string list
