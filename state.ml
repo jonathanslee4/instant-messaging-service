@@ -32,6 +32,12 @@ let init_state (*j*) = { (* shouldn't take in a json *)
 let get_current_menu st = 
   st.current_menu
 
+let get_menu_id menu =
+  match menu with
+  | Login -> "login"
+  | Plaza -> "plaza"
+  | Chat -> "chat"
+
 let get_current_chat st = 
   st.current_chat
 

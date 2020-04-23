@@ -6,9 +6,7 @@ ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -packag
 # Target: main.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), extension:ml, file:main.ml, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules main.ml > main.ml.depends
 # Target: command.mli.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), extension:mli, file:command.mli, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules command.mli > command.mli.depends # cached
-# Target: command.cmi, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), byte, compile, extension:mli, file:command.mli, interf, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -o command.cmi command.mli # cached
+ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules command.mli > command.mli.depends
 # Target: jmodule.mli.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), extension:mli, file:jmodule.mli, ocaml, ocamldep, quiet, traverse }
 ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules jmodule.mli > jmodule.mli.depends # cached
 # Target: jmodule.cmi, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), byte, compile, extension:mli, file:jmodule.mli, interf, ocaml, quiet, traverse }
@@ -21,13 +19,15 @@ ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -packag
 ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -modules state.mli > state.mli.depends # cached
 # Target: state.cmi, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), byte, compile, extension:mli, file:state.mli, interf, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -o state.cmi state.mli # cached
+# Target: command.cmi, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), byte, compile, extension:mli, file:command.mli, interf, ocaml, quiet, traverse }
+ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -o command.cmi command.mli
 # Target: main.cmo, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(yojson), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -o main.cmo main.ml
 + ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -o main.cmo main.ml
-File "main.ml", line 8, characters 17-22:
-8 |   let command = (parse (State.get_current_menu st) (read_line ()) ) in
-                     ^^^^^
-Error: This function has type string -> Command.command
-       It is applied to too many arguments; maybe you forgot a `;'.
+File "main.ml", line 25, characters 15-33:
+25 |     transition (next_menu str st)
+                    ^^^^^^^^^^^^^^^^^^
+Error: This expression has type State.result
+       but an expression was expected of type State.t
 Command exited with code 2.
 # Compilation unsuccessful.

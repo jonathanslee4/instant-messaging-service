@@ -1,10 +1,10 @@
 
 type phrase = string
 type command = 
+  | Username of phrase
   | Engage of phrase
   | Send of phrase
-  | Username of phrase
-  | Back
+  | Quit
 
 exception Empty
 
@@ -31,17 +31,17 @@ let headify slist =
   | [] -> raise Empty
   | hd :: tl -> hd :: [String.concat " " tl]
 
-let parse current_menu str =
+let parse current_menu_id str =
   match striplist str |> headify with
   | [] -> raise Empty
   | hd :: tl -> 
-    if current_menu = Login then 
+    if current_menu_id = "login" then 
       (if tl <> [] then raise Malformed else
          Username hd) else
-    if current_menu = Plaza then
+    if current_menu_id = "plaza" then
       (if tl <> [] then raise Malformed else
-       if hd = "/back" then Back else
+       if hd = "/quit" then Quit else
          Engage hd)
       (* Current menus is Chat *)     
-    else if hd = "/back" then Back else
+    else if hd = "/quit" then Quit else
       Send (String.concat " " (hd :: tl))

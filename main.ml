@@ -3,24 +3,32 @@ open State
 open Readingjson
 open Jmodule
 
-let print_login_window = 
+(* let print_login_window =  *)
 
-  let rec transition st = 
-    let menu = st |> State.get_current_menu in 
-    let command = (parse menu (read_line ()) ) in
-    match command with 
-    | Engage username ->
-      match (State.next_menu username st) with 
-      | Valid t -> 
-      | Invalid ->
-      | Send msg ->
-        match (State.next_menu msg st) with
-        | Valid t ->
-        | Invalid t ->
-        | Username username -> 
-          State.next_menu username st
-        | Back
-            exit 0
+let rec transition st = 
+  let menu = st |> State.get_current_menu in 
+  let command = (Command.parse (State.get_menu_id menu) (read_line ())) in
+  match command with
+  | Username str -> 
+    (match next_menu str st with
+     | Valid t -> transition t
+     | Invalid -> ANSITerminal.(print_string [magenta]
+                                  "\n\n That username doesn't exist. \n");
+       transition st)
+  | Engage str ->
+    (match next_menu str st with
+     | Valid t -> transition t
+     | Invalid -> ANSITerminal.(print_string [magenta]
+                                  "\n\n You don't have a contact with that name. \n");
+       transition st)
+  | Send str ->
+    (match next_menu str st with
+     | Valid t -> transition t
+     | Invalid -> failwith "should not happen")
+  | Quit -> exit 0
+
+
+
 
 
 

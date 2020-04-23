@@ -26,6 +26,7 @@ val init_state : Yojson.Basic.t -> t
 type result = Valid of t | Invalid
 
 val get_current_menu : t -> menu
+val get_menu_id : menu -> string
 val get_current_user : t -> string
 val get_current_contacts : t -> string list
 val get_current_chat : t -> message list
