@@ -10,7 +10,11 @@
 
 (** The abstract type of values representing the program state. *)
 type t 
+
+(** The type representing a menu window. *)
 type menu
+
+(** The type representing a message. *)
 type message
 
 (** [init_state a] is the initial state of the game when playing adventure [a]. 

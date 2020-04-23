@@ -6,18 +6,11 @@ type message = {
   sent_by:string;
   text:string;
 }
-(* 
-type t_convo = {
-  convo:message list
-} *)
 
 type convo = message list
-type contacts = string list
 
-(* type newt = {
-   convo: message list;
-   contacts : string list;
-   } *)
+type contact = string list
+
 
 let message_from_convo_json j ={
   sent_by = j |> member "sent_by" |> to_string;
