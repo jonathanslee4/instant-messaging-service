@@ -31,7 +31,7 @@ let headify slist =
   | [] -> raise Empty
   | hd :: tl -> hd :: [String.concat " " tl]
 
-let parse str current_menu =
+let parse current_menu str =
   match striplist str |> headify with
   | [] -> raise Empty
   | hd :: tl -> 

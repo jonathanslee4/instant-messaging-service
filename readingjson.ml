@@ -29,10 +29,10 @@ let rec make_message_list mess_list json_list=
   |[]-> mess_list
   |h::t-> make_message_list ((message_from_convo_json h)::mess_list) t
 
-(* description: takes in json script and pipelines script to string attributes,
+(* (* description: takes in json script and pipelines script to string attributes,
    requires: json is valid json script *)
-let from_json json (name1:string) (name2:string)=
-  json |> member (Jmodule.id_creator name1 name2) |> to_list |> make_message_list []
+   let from_json json (name1:string) (name2:string)=
+   json |> member (Jmodule.id_creator name1 name2) |> to_list |> make_message_list [] *)
 
 let convo_from_json json = 
   json |> member "text history" |> to_list |> List.map message_from_convo_json
@@ -47,17 +47,17 @@ let output_convo_line message=
   ANSITerminal.(print_string [green]
                   (message.text^"\n"))  
 
-(* ITERATE THROUGH SENT BY AND TEXT TO NOW
+(* (* ITERATE THROUGH SENT BY AND TEXT TO NOW
    PRINT OUT EACH ELEMENT OF LISTS *)
-(* get sent_by as list *)
-let get_sent_bys t = 
-  let sent_list = t.convo in
-  List.map (fun s -> s.sent_by) sent_list
+   (* get sent_by as list *)
+   let get_sent_bys t = 
+   let sent_list = t.convo in
+   List.map (fun s -> s.sent_by) sent_list
 
-(* get text as list *)
-let get_texts t =
-  let text_list = t.convo in
-  List.map (fun txt->txt.text) text_list
+   (* get text as list *)
+   let get_texts t =
+   let text_list = t.convo in
+   List.map (fun txt->txt.text) text_list *)
 
 (* iterate through both and print out as you iterate *)
 (* let rec print_convo (sent_list:string list) (text_list:string list)=

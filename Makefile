@@ -1,5 +1,9 @@
-# MODULES=jmodule
+# 
+MODULES=jmodule
 MODULES=readingjson
+MODULES=state
+MODULES=command
+MODULES=main
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
