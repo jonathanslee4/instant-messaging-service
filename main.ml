@@ -23,9 +23,12 @@ let rec transition st =
        transition st)
   | Send str ->
     (match next_menu str st with
-     | Valid t -> transition t
+     | Valid t -> 
+
+       transition t
      | Invalid -> failwith "should not happen")
   | Quit -> exit 0
+
 
 
 
@@ -42,7 +45,7 @@ let main () =
   ANSITerminal.(print_string [magenta]
                   "\n\nWelcome to our instant messaging system.\n");
   print_endline "Would you like to connect with new people? Type 
-   'y' to continue! \n";
+  'y' to continue! \n";
   print_string  "> ";
   match read_line () with
   | "" -> exit 0
