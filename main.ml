@@ -3,11 +3,19 @@ open State
 open Readingjson
 open Jmodule
 
+let rec print_contacts con_list =
+  match con_list with
+  |[] -> print_endline ""
+  |h::t-> print_endline("\n"^h"\n"); print_contacts t
+
 let print_menu_description st = 
   match (get_current_menu st) with
-  | Login ->
-  | Plaza -> 
-  | Chat ->
+  | Login -> ANSITerminal.(print_string [magenta]
+                            "This is the login page.");
+  | Plaza -> ANSITerminal.(print_string [magenta]
+                            "This is the Plaza."); print_contacts (get_current_contacts st);
+  | Chat ->ANSITerminal.(print_string [magenta]
+                            "This is the chat page."); 
 
     let rec transition st = 
       let menu = st |> State.get_current_menu in 
