@@ -24,24 +24,18 @@ let striplist str =
   if str = "" then raise Empty else
     str |> String.split_on_char ' ' |> remove_empty
 
-(** headify [slist] is the stringlist whose head is the head of slist, and whose
-    tail stores the string concatenation of the tail of slist. *)
-let headify slist = 
-  match slist with
-  | [] -> raise Empty
-  | hd :: tl -> hd :: [String.concat " " tl]
-
 let parse current_menu_id str =
-  match striplist str |> headify with
+  let strlist = striplist str in
+  match strlist with
   | [] -> raise Empty
   | hd :: tl -> 
     if current_menu_id = "login" then 
-      (if tl <> [] then raise Malformed else
+      (if List.length strlist <> 1  then raise Malformed else
          Username hd) else
     if current_menu_id = "plaza" then
-      (if tl <> [] then raise Malformed else
+      (if List.length strlist <> 1 then raise Malformed else
        if hd = "/quit" then Quit else
          Engage hd)
       (* Current menus is Chat *)     
     else if hd = "/quit" then Quit else
-      Send (String.concat " " (hd :: tl))
+      Send (String.concat " " (strlist))

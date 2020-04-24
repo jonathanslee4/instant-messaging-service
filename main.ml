@@ -30,6 +30,7 @@ let print_new_message st=
   |h::t->output_convo_line h
 
 let rec transition st = 
+
   let menu = st |> State.get_current_menu in 
   let command = (Command.parse (State.get_menu_id menu) (read_line ())) in
   match command with
@@ -63,3 +64,6 @@ let main () =
   let state = State.init_state in
   print_login;
   transition state 
+
+(* Execute the game engine. *)
+let () = main ()
