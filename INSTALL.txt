@@ -1,0 +1,5 @@
+Run "opam ppx_deriving_yojson" in the terminal.
+
+Type "make ims" to start the program. 
+The usernames currently registered are "jessica" "jonny" and "wemi", which can
+be found in the contacts.json file. 
