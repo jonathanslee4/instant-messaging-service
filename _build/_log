@@ -24,21 +24,21 @@ ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -packag
 # Target: main.cmo, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), byte, compile, extension:cmo, extension:ml, file:main.cmo, file:main.ml, implem, ocaml, quiet, traverse }
 ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o main.cmo main.ml # cached
 # Target: command.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), extension:ml, file:command.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -modules command.ml > command.ml.depends
-# Target: jmodule.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), extension:ml, file:jmodule.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -modules jmodule.ml > jmodule.ml.depends
-# Target: readingjson.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), extension:ml, file:readingjson.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -modules readingjson.ml > readingjson.ml.depends
-# Target: state.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), extension:ml, file:state.ml, ocaml, ocamldep, quiet, traverse }
-ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -modules state.ml > state.ml.depends
+ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -modules command.ml > command.ml.depends # cached
 # Target: command.cmo, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), byte, compile, extension:cmo, extension:ml, file:command.cmo, file:command.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o command.cmo command.ml
+ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o command.cmo command.ml # cached
+# Target: jmodule.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), extension:ml, file:jmodule.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -modules jmodule.ml > jmodule.ml.depends # cached
 # Target: jmodule.cmo, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), byte, compile, extension:cmo, extension:ml, file:jmodule.cmo, file:jmodule.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o jmodule.cmo jmodule.ml
+ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o jmodule.cmo jmodule.ml # cached
+# Target: readingjson.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), extension:ml, file:readingjson.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -modules readingjson.ml > readingjson.ml.depends # cached
 # Target: readingjson.cmo, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), byte, compile, extension:cmo, extension:ml, file:readingjson.cmo, file:readingjson.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o readingjson.cmo readingjson.ml
+ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o readingjson.cmo readingjson.ml # cached
+# Target: state.ml.depends, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), extension:ml, file:state.ml, ocaml, ocamldep, quiet, traverse }
+ocamlfind ocamldep -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -modules state.ml > state.ml.depends # cached
 # Target: state.cmo, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), byte, compile, extension:cmo, extension:ml, file:state.cmo, file:state.ml, implem, ocaml, quiet, traverse }
-ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o state.cmo state.ml
+ocamlfind ocamlc -c -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str -o state.cmo state.ml # cached
 # Target: main.byte, tags: { package(ANSITerminal), package(oUnit), package(ppx_deriving_yojson), package(str), package(yojson), byte, dont_link_with, extension:byte, file:main.byte, link, ocaml, program, quiet, traverse }
-ocamlfind ocamlc -linkpkg -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str command.cmo jmodule.cmo readingjson.cmo state.cmo main.cmo -o main.byte
+ocamlfind ocamlc -linkpkg -package oUnit -package yojson -package ANSITerminal -package ppx_deriving_yojson -package str command.cmo jmodule.cmo readingjson.cmo state.cmo main.cmo -o main.byte # cached
 # Compilation successful.
