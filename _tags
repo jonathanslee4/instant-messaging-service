@@ -1,1 +1,1 @@
-true: package(oUnit),package(yojson),package(ANSITerminal), package(ppx_deriving_yojson)
+true: package(oUnit),package(yojson),package(ANSITerminal), package(ppx_deriving_yojson), package(str)

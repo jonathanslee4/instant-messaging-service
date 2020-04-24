@@ -1,11 +1,4 @@
-(* type username = string
-
-   type users = username list
-
-   type text = {
-   sender : string; 
-   message : string;
-   } *)
+open Readingjson
 
 type menu = 
   | Login
@@ -14,8 +7,8 @@ type menu =
 
 type t = {
   current_menu : menu;
-  current_chat : Readingjson.convo;
-  current_contacts : Readingjson.contacts;
+  current_chat : convo;
+  current_contacts : string list;
   current_user : string;
 }
 

@@ -11,9 +11,9 @@ type phrase = string
 (** The type [command] represents a player input which depends on the current
     menu. *)
 type command = 
+  | Username of phrase
   | Engage of phrase
   | Send of phrase
-  | Username of phrase
   | Quit
 
 (** Raised when an empty command is parsed. *)

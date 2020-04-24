@@ -43,16 +43,17 @@ let rec transition st =
   | Engage str ->
     (* display contents of previous chat, reverse list *)
     (match next_menu str st with
-     | Valid t -> if (get_current_menu t) = Login then (print_login;transition t) 
-       else print_whole_chat;
-       transition t
+     | Valid t -> if (t |> get_current_menu |> get_menu_id) = "login"
+       then (print_login; transition t) 
+       else (print_whole_chat t; transition t)
      | Invalid -> ANSITerminal.(print_string [magenta]
                                   "\n\n You don't have a contact with that name. \n");
        transition st)
   | Send str ->
     (* display most recent chat *)
     (match next_menu str st with
-     | Valid t -> if (get_current_menu t)= Chat then ((print_new_message st);transition t )
+     | Valid t -> if t |> get_current_menu |> get_menu_id = "chat" 
+       then ((print_new_message st);transition t )
        else (print_plaza t); transition t
      | Invalid -> failwith "should not happen")
   | Quit -> exit 0
@@ -60,4 +61,5 @@ let rec transition st =
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
   let state = State.init_state in
+  print_login;
   transition state 

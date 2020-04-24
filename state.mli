@@ -15,7 +15,7 @@ type t
 type menu
 
 (** The type representing a message. *)
-type message
+(* type message *)
 
 (** [init_state a] is the initial state of the game when playing adventure [a]. 
     In that state the adventurer is currently located in the starting room,
@@ -29,7 +29,7 @@ val get_current_menu : t -> menu
 val get_menu_id : menu -> string
 val get_current_user : t -> string
 val get_current_contacts : t -> string list
-val get_current_chat : t -> 'a list
+val get_current_chat : t -> Readingjson.message list
 
 (** [next_menu input st] is [Valid t] if [input] from the current menu in state 
     [st] is not invalid. An input is only invalid if the current menu is

@@ -1,5 +1,6 @@
 B _build
 PKG oUnit
+PKG str
 PKG yojson
 PKG find yojson
 PKG ANSITerminal

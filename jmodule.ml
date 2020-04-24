@@ -1,6 +1,7 @@
 open Yojson
 open Yojson.Basic.Util
 open Printf
+open Str
 
 (* helper function: returns true if list contains item, false otherwise *)
 let rec contains list item =
@@ -19,7 +20,7 @@ let json_creator (id:string)=
   id^".json"
 
 (* determines whether json file name exists in current director,
-returns: true if in directory, false otherwise *)
+   returns: true if in directory, false otherwise *)
 let directory_exists (json_name:string)=
   Sys.file_exists json_name
 
@@ -33,7 +34,7 @@ let entire_file (file_name:string)=
 (* helper function: returns index of penultimate } *)
 let penultimate_index (str:string) =
   (* find index  of first and last },
-  find index of last } of string[first:last-1]*)
+     find index of last } of string[first:last-1]*)
   let first_last = String.rindex str '}' in
   let first_chop = Str.string_before str first_last in
   String.rindex first_chop '}'
