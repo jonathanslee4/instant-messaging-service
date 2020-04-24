@@ -11,6 +11,10 @@ type convo = message list
 
 type contact = string list
 
+let get_sent_by msg = msg.sent_by
+
+let get_text msg = msg.text
+
 
 let message_from_convo_json j ={
   sent_by = j |> member "sent_by" |> to_string;
@@ -33,12 +37,12 @@ let convo_from_json json =
 let contacts_from_json json = 
   json |> member "contact list" |> to_list |> List.map to_string 
 
-(* helper function: takes sent_by and text and displays message *)
+(* helper function: takes sent_by and text and displays message*)
 let output_convo_line message=
   ANSITerminal.(print_string [yellow]
                   (message.sent_by^": "));
   ANSITerminal.(print_string [green]
-                  (message.text^"\n"))  
+                  (message.text^"\n"))   
 
 (* (* ITERATE THROUGH SENT BY AND TEXT TO NOW
    PRINT OUT EACH ELEMENT OF LISTS *)
@@ -61,7 +65,7 @@ let output_convo_line message=
     |[]-> output_convo_line "" ""
     |x::xs-> output_convo_line h x; print_convo t xs); print_convo *)
 
-let rec print_convo t=
-  match t with
-  |[]->print_endline ""
-  |x::xs-> output_convo_line x; (print_convo xs)
+(* let rec print_convo t=
+   match t with
+   |[]->print_endline ""
+   |x::xs-> output_convo_line x; (print_convo xs) *)

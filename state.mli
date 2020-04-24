@@ -29,7 +29,7 @@ val get_current_menu : t -> menu
 val get_menu_id : menu -> string
 val get_current_user : t -> string
 val get_current_contacts : t -> string list
-val get_current_chat : t -> message list
+val get_current_chat : t -> 'a list
 
 (** [next_menu input st] is [Valid t] if [input] from the current menu in state 
     [st] is not invalid. An input is only invalid if the current menu is
