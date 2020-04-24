@@ -8,14 +8,30 @@ let rec print_contacts con_list =
   |[] -> print_endline ""
   |h::t-> print_endline("\n"^h"\n"); print_contacts t
 
-let print_menu_description st = 
+(* let print_menu_description st = 
   match (get_current_menu st) with
   | Login -> ANSITerminal.(print_string [magenta]
                             "This is the login page.");
   | Plaza -> ANSITerminal.(print_string [magenta]
                             "This is the Plaza."); print_contacts (get_current_contacts st);
   | Chat ->ANSITerminal.(print_string [magenta]
-                            "This is the chat page."); 
+                            "This is the chat page.");  *)
+
+let print_login () =
+  ANSITerminal.(print_string [magenta]
+                            "This is the login page.");
+
+let print_plaza st =
+  ANSITerminal.(print_string [magenta]
+                            "This is the Plaza."); print_contacts (get_current_contacts st);
+
+let print_whole_chat st=
+  print_convo (List.rev(get_current_chat st))
+
+let print_new_message st=
+  match (get_current_chat st) with
+  |[]->print_string ""
+  |h::t->output_convo_line h
 
     let rec transition st = 
       let menu = st |> State.get_current_menu in 
@@ -23,21 +39,23 @@ let print_menu_description st =
       match command with
       | Username str -> 
         (match next_menu str st with
-         | Valid t -> transition t
+         | Valid t -> ANSITerminal.(print_string [magenta]
+                            "This is the plaza.");transition t
          | Invalid -> ANSITerminal.(print_string [magenta]
                                       "\n\n That username doesn't exist. \n");
            transition st)
       | Engage str ->
+      (* display contents of previous chat, reverse list *)
         (match next_menu str st with
-         | Valid t -> transition t
+         | Valid t -> if (get_current_menu t)= Login then print_login;transition t else print_whole_chat;
+         transition t
          | Invalid -> ANSITerminal.(print_string [magenta]
                                       "\n\n You don't have a contact with that name. \n");
            transition st)
       | Send str ->
+      (* display most recent chat *)
         (match next_menu str st with
-         | Valid t -> 
-
-           transition t
+         | Valid t -> if (get_current_menu t)=Chat then (print_new_message st);transition t else (print_plaza t); transition t
          | Invalid -> failwith "should not happen")
       | Quit -> exit 0
 
