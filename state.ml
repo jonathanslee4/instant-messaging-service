@@ -10,6 +10,7 @@ type t = {
   current_chat : convo;
   current_contacts : string list;
   current_user : string;
+  current_receiver : string;
 }
 
 let init_state (*j*) = { (* shouldn't take in a json *)
@@ -20,6 +21,7 @@ let init_state (*j*) = { (* shouldn't take in a json *)
                      |> Yojson.Basic.from_file 
                      |> Readingjson.contacts_from_json;
   current_user = "";
+  current_receiver = "";
 }
 
 let get_current_menu st = 
@@ -55,7 +57,8 @@ let next_menu input st =
         current_menu = Plaza; 
         current_chat = st.current_chat; 
         current_contacts = st.current_contacts;
-        current_user = input; }
+        current_user = input;
+        current_receiver = ""; }
     else Invalid (** UPDATE in MS2: should go to a create account page *)
   | Plaza ->
     if (input = "/back") then 
@@ -64,6 +67,7 @@ let next_menu input st =
         current_chat = [];
         current_contacts = st.current_contacts;
         current_user = "";
+        current_receiver = "";
       } else 
     if (is_existing_username input st) then 
       let filename = 
@@ -74,14 +78,16 @@ let next_menu input st =
            current_chat = 
              filename |> Yojson.Basic.from_file |> Readingjson.convo_from_json;
            current_contacts = st.current_contacts;
-           current_user = st.current_user; }
+           current_user = st.current_user;
+           current_receiver = input;}
        else 
          Valid {
            current_menu = Chat; 
            current_chat = 
              st.current_chat; (* The current_chat is empty *)
            current_contacts = st.current_contacts;
-           current_user = st.current_user; } )
+           current_user = st.current_user;
+           current_receiver = input;})
     else Invalid
   | Chat -> 
     if (input = "/back") then 
@@ -90,9 +96,10 @@ let next_menu input st =
         current_chat = [];
         current_contacts = st.current_contacts;
         current_user = st.current_user;
+        current_receiver = "";
       }
     else 
-      let file = st.current_user |> Jmodule.id_creator input in
+      let file = st.current_user |> Jmodule.id_creator st.current_receiver in
       (Jmodule.editing_json st.current_user input file;
        Valid {
          current_menu = Chat; 
@@ -101,7 +108,8 @@ let next_menu input st =
                         |> Yojson.Basic.from_file 
                         |> Readingjson.convo_from_json;
          current_contacts = st.current_contacts;
-         current_user = st.current_user; } )
+         current_user = st.current_user;
+         current_receiver = st.current_receiver; } )
 
 
 
