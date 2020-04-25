@@ -6,9 +6,12 @@ type command =
   | Send of phrase
   | Quit
 
-exception Empty
+exception Empty_Username
+exception Empty_Engage
+exception Empty_Send
 
-exception Malformed
+exception Malformed_Username
+exception Malformed_Engage
 
 (** [remove_empty slst] is a string list with all empty strings in slst
     removed *)
@@ -21,19 +24,21 @@ let rec remove_empty slst =
     A word is consecutive sequence of non-space characters. If str is
     empty, an Empty exception is raised *)
 let striplist str = 
-  if str = "" then raise Empty else
+  if str = "" then [] else
     str |> String.split_on_char ' ' |> remove_empty
 
 let parse current_menu_id str =
   let strlist = striplist str in
   match strlist with
-  | [] -> raise Empty
+  | [] -> (if current_menu_id = "login" then raise Empty_Username else
+           if current_menu_id = "plaza" then raise Empty_Engage else
+             raise Empty_Send)
   | hd :: tl -> 
     if current_menu_id = "login" then 
-      (if List.length strlist <> 1  then raise Malformed else
+      (if List.length strlist <> 1  then raise Malformed_Username else
          Username hd) else
     if current_menu_id = "plaza" then
-      (if List.length strlist <> 1 then raise Malformed else
+      (if List.length strlist <> 1 then raise Malformed_Engage else
        if hd = "/quit" then Quit else
          Engage hd)
       (* Current menus is Chat *)     

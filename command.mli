@@ -16,11 +16,21 @@ type command =
   | Send of phrase
   | Quit
 
-(** Raised when an empty command is parsed. *)
-exception Empty
+(** Raised when an empty command is parsed when a user is in the Login menu. *)
+exception Empty_Username
 
-(** Raised when a malformed command is encountered. *)
-exception Malformed
+(** Raised when an empty command is parsed when a user is in the Plaza menu. *)
+exception Empty_Engage
+
+(** Raised when an empty command is parsed when a user is in the Send menu. *)
+exception Empty_Send
+
+(** Raised when a malformed command is encountered in the Login menu. *)
+exception Malformed_Username
+
+(** Raised when a malformed command is encountered in the Plaza menu. *)
+exception Malformed_Engage
+
 
 (** [parse str] parses a player's input into a [command], as follows. 
     Examples: 
