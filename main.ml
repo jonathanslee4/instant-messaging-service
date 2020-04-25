@@ -4,15 +4,20 @@ open Readingjson
 open Jmodule
 
 
+let rec print_slist slist =
+  match slist with
+  | [] -> print_string ""
+  | hd :: tl -> (print_string hd); print_slist tl
+
 let rec print_contacts st con_list =
   match con_list with
   |[] -> print_string ""
   |hd::tl-> 
-    (* if hd = get_current_user st then (print_endline("skipped");
-                                      print_contacts st tl)
-       else
-       print_endline(hd); print_contacts st tl *)
-    print_endline(hd); print_contacts st tl 
+    if hd = get_current_user st then print_contacts st tl
+    else
+      (print_endline(hd); 
+       print_contacts st tl)
+(* print_endline(hd); print_contacts st tl  *)
 
 let rec print_convo t=
   match t with
@@ -38,13 +43,13 @@ let print_new_message st=
   |h::t->output_convo_line h
 
 let rec transition st = 
-
   let menu = st |> State.get_current_menu in 
   let command = (Command.parse (State.get_menu_id menu) (read_line ())) in
   match command with
   | Username str -> 
     (match next_menu str st with
-     | Valid t -> print_plaza t; transition t
+     | Valid t -> 
+       print_plaza t; transition t
      | Invalid -> ANSITerminal.(print_string [magenta]
                                   "\n\n That username doesn't exist. \n");
        transition st)
