@@ -1,5 +1,0 @@
-Run "opam install ppx_deriving_yojson" in the terminal.
-Run "make build" to build the program
-Type "make ims" to start the program. 
-The usernames currently registered are "jessica" "jonny" and "wemi", which can
-be found in the contacts.json file. 

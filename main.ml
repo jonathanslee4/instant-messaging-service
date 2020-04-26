@@ -26,12 +26,11 @@ let rec print_convo t=
     (output_convo_line x; (print_convo xs))
 
 let print_login =
-  print_endline("yo");
   ANSITerminal.(print_string [green]
                   "\nWelcome to the login page. What is your username?\n>> ")
 
 let print_plaza st =
-  ANSITerminal.(print_string [magenta] "\nWho would you like to chat with?\n");
+  ANSITerminal.(print_string [magenta] "\nWho would you like to chat with? Type /back to log out.\n");
   print_contacts st ((get_current_contacts st));
   ANSITerminal.(print_string [magenta] "\n>> ")
 
@@ -39,7 +38,8 @@ let print_whole_chat st=
   print_string "\n";
   ANSITerminal.erase Screen ;
   print_convo (List.rev(get_current_chat st));
-  ANSITerminal.(print_string [magenta] "\n>> ")
+
+  ANSITerminal.(print_string [magenta] "Type your message or /back to return to your contacts.\n>> ")
 
 let print_new_message st=
   print_string "\n";
@@ -59,16 +59,19 @@ let rec transition st =
        | Valid t -> 
          print_plaza t; transition t
        | Invalid -> ANSITerminal.(print_string [magenta]
-                                    "\n\n That username doesn't exist. \n");
+                                    "\n\nThat username doesn't exist. \n\n>> ");
          transition st)
     | Engage str ->
       (* display contents of previous chat, reverse list *)
       (match next_menu str st with
        | Valid t -> if ((t |> get_current_menu |> get_menu_id) = "login")
-         then (print_endline("here");print_login;print_endline("skipped");transition t) 
+         then (
+           ANSITerminal.(print_string [green]
+                           "\nWelcome to the login page. What is your username?\n>> ");
+           transition t) 
          else (print_whole_chat t; transition t)
        | Invalid -> ANSITerminal.(print_string [magenta]
-                                    "\n\n You don't have a contact with that name. \n");
+                                    "\n\nYou don't have a contact with that name. \n");
          transition st)
     | Send str ->
       (* display most recent chat *)
