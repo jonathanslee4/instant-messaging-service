@@ -23,10 +23,9 @@ let rec print_convo t=
   match t with
   |[]->print_string ""
   |x::xs-> 
-    (output_convo_line x; (print_convo xs))
+    output_convo_line x; (print_convo xs)
 
 let print_login =
-  print_endline("yo");
   ANSITerminal.(print_string [green]
                   "\nWelcome to the login page. What is your username?\n>> ")
 
@@ -64,8 +63,8 @@ let rec transition st =
     | Engage str ->
       (* display contents of previous chat, reverse list *)
       (match next_menu str st with
-       | Valid t -> if ((t |> get_current_menu |> get_menu_id) = "login")
-         then (print_endline("here");print_login;print_endline("skipped");transition t) 
+       | Valid t -> if (t |> get_current_menu |> get_menu_id) = "login"
+         then (print_login; transition t) 
          else (print_whole_chat t; transition t)
        | Invalid -> ANSITerminal.(print_string [magenta]
                                     "\n\n You don't have a contact with that name. \n");
