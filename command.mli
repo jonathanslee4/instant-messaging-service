@@ -31,6 +31,10 @@ exception Malformed_Username
 (** Raised when a malformed command is encountered in the Plaza menu. *)
 exception Malformed_Engage
 
+(** Raised when a malformed command is encountered in the Plaza menu. 
+    Handles the specific case where you chat yourself. *)
+exception Malformed_Engage_Identity
+
 
 (** [parse str] parses a player's input into a [command], as follows. 
     Examples: 
@@ -47,7 +51,7 @@ exception Malformed_Engage
     Raises: [Malformed] if the command is malformed. A command
     is {malformed} if the phrase is more than one word in the Login or Plaza
     menus. *)
-val parse : string -> string -> command
+val parse : string -> string -> string -> command
 
 (* END DO NOT CHANGE
  **********************************************************************)

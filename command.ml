@@ -12,6 +12,7 @@ exception Empty_Send
 
 exception Malformed_Username
 exception Malformed_Engage
+exception Malformed_Engage_Identity 
 
 (** [remove_empty slst] is a string list with all empty strings in slst
     removed *)
@@ -27,7 +28,7 @@ let striplist str =
   if str = "" then [] else
     str |> String.split_on_char ' ' |> remove_empty
 
-let parse current_menu_id str =
+let parse current_menu_id current_user_id str =
   let strlist = striplist str in
   match strlist with
   | [] -> (if current_menu_id = "login" then raise Empty_Username else
@@ -39,6 +40,7 @@ let parse current_menu_id str =
          Username hd) else
     if current_menu_id = "plaza" then
       (if List.length strlist <> 1 then raise Malformed_Engage else
+       if hd = current_user_id then raise Malformed_Engage_Identity else 
        if hd = "/quit" then Quit else
          Engage hd)
       (* Current menus is Chat *)     

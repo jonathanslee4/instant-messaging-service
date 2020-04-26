@@ -50,7 +50,7 @@ let print_new_message st=
 let rec transition st = 
   try (
     let menu = st |> State.get_current_menu in 
-    let command = (Command.parse (State.get_menu_id menu) (read_line ())) in
+    let command = (Command.parse (State.get_menu_id menu) (get_current_user st) (read_line ())) in
 
     match command with
     | Username str -> 
@@ -79,14 +79,22 @@ let rec transition st =
     | Quit -> exit 0 )
   with 
   | Empty_Username -> ANSITerminal.(print_string [red] 
-                                      "Whoops! You didn't enter anything. Enter a valid username to login!")
-  | Empty_Engage -> ANSITerminal.(print_string [red] "Whoops! You can't chat someone with no name!!" )
+                                      "Whoops! You didn't enter anything. Enter a valid username to login!"); 
+    ANSITerminal.(print_string [magenta] "\n\n>> ");
+    transition st
+  | Empty_Engage -> ANSITerminal.(print_string [red] "Whoops! You can't chat someone with no name!!" );
+    ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
   | Empty_Send -> ANSITerminal.(print_string [red] 
-                                  "Uh oh..you didn't type anything to send! Try something more meaningful.")
+                                  "Uh oh..you didn't type anything to send! Try something more meaningful.");
+    ANSITerminal.(print_string [magenta] "\n\n>> ");
+    transition st
   | Malformed_Username -> ANSITerminal.(print_string [red]
-                                          "Uh oh that username doesn't exist. ")
+                                          "Uh oh that username doesn't exist. "); ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
   | Malformed_Engage -> ANSITerminal.(print_string [red]
-                                        "Uh oh that person doesn't exist. Try one of your existing contacts!")
+                                        "Uh oh that person doesn't exist. Try one of your existing contacts!"); ANSITerminal.(print_string [magenta] "\n\n>>"); transition st
+  | Malformed_Engage_Identity -> ANSITerminal.(print_string [red]
+                                                 "Ummmm you can't chat with yourself! Silly"); ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
+
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
