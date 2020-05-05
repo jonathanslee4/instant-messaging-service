@@ -1,18 +1,23 @@
 
 type phrase = string
+
+type request_tag = Add | Accept | Deny
 type command = 
-  | Username of phrase
-  | Engage of phrase
+  | Login_As of phrase
+  | Chat_With of phrase
   | Send of phrase
+  | Open_Requests
+  | Move_Request of request_tag * phrase
+  | Back
   | Quit
 
-exception Empty_Username
-exception Empty_Engage
+exception Empty_Login_Id
+exception Empty_Chat_With_Id
 exception Empty_Send
 
-exception Malformed_Username
-exception Malformed_Engage
-exception Malformed_Engage_Identity 
+exception Malformed_Login_Id
+exception Malformed_Chat_With
+exception Malformed_Chat_With_Self
 
 (** [remove_empty slst] is a string list with all empty strings in slst
     removed *)
@@ -28,21 +33,38 @@ let striplist str =
   if str = "" then [] else
     str |> String.split_on_char ' ' |> remove_empty
 
+let get_string strlist=
+  match strlist with
+  | [] -> failwith "string list must have 2 elements"
+  | hd :: tl -> hd
+
+let get_tag_id tag = 
+  match tag with
+  | Add -> "add"
+  | Accept -> "accept"
+  | Deny -> "deny"
+
 let parse current_menu_id current_user_id str =
   let strlist = striplist str in
   match strlist with
-  | [] -> (if current_menu_id = "login" then raise Empty_Username else
-           if current_menu_id = "plaza" then raise Empty_Engage else
+  | [] -> (if current_menu_id = "login" then raise Empty_Login_Id else
+           if current_menu_id = "plaza" then raise Empty_Chat_With_Id else
              raise Empty_Send)
   | hd :: tl -> 
+    if hd = "/quit" then Quit else
+    if hd = "/back" then Back else
     if current_menu_id = "login" then 
-      (if List.length strlist <> 1  then raise Malformed_Username else
-         Username hd) else
+      (if List.length strlist <> 1  then raise Malformed_Login_Id else
+         Login_As hd) else
     if current_menu_id = "plaza" then
-      (if List.length strlist <> 1 then raise Malformed_Engage else
-       if hd = current_user_id then raise Malformed_Engage_Identity else 
-       if hd = "/quit" then Quit else
-         Engage hd)
-      (* Current menus is Chat *)     
-    else if hd = "/quit" then Quit else
-      Send (String.concat " " (strlist))
+      (if hd = "/connect" then Open_Requests else
+       if List.length strlist <> 1 then raise Malformed_Chat_With else
+       if hd = current_user_id then raise Malformed_Chat_With_Self else 
+         Chat_With hd)
+      (* Current menus is Chat *) else
+    if current_menu_id = "connect" then 
+      (if List.length strlist <> 2 then failwith "havent imp exceptions yet" else
+       if hd = "add" then Move_Request (Add, get_string tl) else
+       if hd = "accept" then Move_Request (Accept,get_string tl) else
+         Move_Request (Deny, get_string tl))
+    else Send (String.concat " " (strlist))

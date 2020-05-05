@@ -31,11 +31,17 @@ let rec make_message_list mess_list json_list=
    let from_json json (name1:string) (name2:string)=
    json |> member (Jmodule.id_creator name1 name2) |> to_list |> make_message_list [] *)
 
-let convo_from_json json = 
-  json |> member "text history" |> to_list |> List.map message_from_convo_json
+let convo_from_json yojsont = 
+  yojsont |> member "text history" |> to_list |> List.map message_from_convo_json
 
-let contacts_from_json json = 
-  json |> member "contact list" |> to_list |> List.map to_string 
+let contacts_from_json yojsont = 
+  yojsont |> member "contact list" |> to_list |> List.map to_string 
+
+let accepted_friend_pairs_from_json yojsont = 
+  yojsont |> member "accepted_friend_pairs" |> to_list |> List.map to_string
+
+let pending_friend_pairs_from_json yojsont = 
+  yojsont |> member "pending_friend_pairs" |> to_list |> List.map to_string
 
 (* helper function: takes sent_by and text and displays message*)
 let output_convo_line message=

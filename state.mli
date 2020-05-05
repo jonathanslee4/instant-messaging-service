@@ -34,4 +34,6 @@ val get_current_chat : t -> Readingjson.message list
 (** [next_menu input st] is [Valid t] if [input] from the current menu in state 
     [st] is not invalid. An input is only invalid if the current menu is
     [Login] or [Plaza] and the input is not a pre-existing username. *)
-val next_menu : string -> t -> result 
+val change_state : string -> t -> result 
+val interact_with_request : string -> string -> t -> result
+val go_back : t -> result

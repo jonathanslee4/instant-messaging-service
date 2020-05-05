@@ -3,7 +3,8 @@ open Readingjson
 type menu = 
   | Login
   | Plaza
-  | Chat 
+  | Chat
+  | Connect
 
 type t = {
   current_menu : menu;
@@ -32,6 +33,7 @@ let get_menu_id menu =
   | Login -> "login"
   | Plaza -> "plaza"
   | Chat -> "chat"
+  | Connect -> "connect"
 
 let get_current_chat st = 
   st.current_chat
@@ -49,7 +51,7 @@ type result = Valid of t | Invalid
 let is_existing_username input st = 
   List.mem input st.current_contacts
 
-let next_menu input st = 
+let change_state input st = 
   match st.current_menu with 
   | Login -> 
     if (is_existing_username input st) then 
@@ -58,17 +60,18 @@ let next_menu input st =
         current_chat = st.current_chat; 
         current_contacts = st.current_contacts;
         current_user = input;
-        current_receiver = ""; }
+        current_receiver = "";
+      }
     else Invalid (** UPDATE in MS2: should go to a create account page *)
   | Plaza ->
-    if (input = "/back") then 
+    if (input = "open_requests") then 
       Valid {
-        current_menu = Login; 
+        current_menu = Connect; 
         current_chat = [];
         current_contacts = st.current_contacts;
-        current_user = "";
+        current_user = st.current_user;
         current_receiver = "";
-      } else 
+      } else
     if (is_existing_username input st) then 
       let filename = 
         st.current_user |> Jmodule.id_creator input |> Jmodule.json_creator in
@@ -79,7 +82,8 @@ let next_menu input st =
              filename |> Yojson.Basic.from_file |> Readingjson.convo_from_json;
            current_contacts = st.current_contacts;
            current_user = st.current_user;
-           current_receiver = input;}
+           current_receiver = input;
+         }
        else 
          Valid {
            current_menu = Chat; 
@@ -87,29 +91,68 @@ let next_menu input st =
              st.current_chat; (* The current_chat is empty *)
            current_contacts = st.current_contacts;
            current_user = st.current_user;
-           current_receiver = input;})
+           current_receiver = input;
+         })
     else Invalid
   | Chat -> 
-    if (input = "/back") then 
-      Valid {
-        current_menu = Plaza; 
-        current_chat = [];
-        current_contacts = st.current_contacts;
-        current_user = st.current_user;
-        current_receiver = "";
-      }
-    else 
-      let file = st.current_user |> Jmodule.id_creator st.current_receiver in
-      (Jmodule.editing_json st.current_user input file;
-       Valid {
-         current_menu = Chat; 
-         current_chat = file 
-                        |> Jmodule.json_creator 
-                        |> Yojson.Basic.from_file 
-                        |> Readingjson.convo_from_json;
-         current_contacts = st.current_contacts;
-         current_user = st.current_user;
-         current_receiver = st.current_receiver; } )
+    let file = st.current_user |> Jmodule.id_creator st.current_receiver in
+    (Jmodule.editing_json st.current_user input file;
+     Valid {
+       current_menu = Chat; 
+       current_chat = file 
+                      |> Jmodule.json_creator 
+                      |> Yojson.Basic.from_file 
+                      |> Readingjson.convo_from_json;
+       current_contacts = st.current_contacts;
+       current_user = st.current_user;
+       current_receiver = st.current_receiver; 
+     }) 
+  | Connect -> 
+    failwith "should not happen"
+
+let interact_w_request tag_id input st = 
+  failwith "unimplemented"
+(* let pair = Jmodule.id_creator st.current_user input in
+   let afp = "contacts.json" |> Yojson.Basic.from_file |> Readingjson.accepted_friend_pairs_from_json in 
+   let pfp = "contacts.json" |> Yojson.Basic.from_file |> Readingjson.pending_friend_pairs_from_json in 
+   if tag = "add" && if not(List.mem pair afp) && if not(List.mem pair pfp) && if input <> st.current_user then
+                       (Valid {
+                           current_menu = Connect; 
+                           current_chat = [];
+                           current_contacts = st.current_contacts;
+                           current_user = st.current_user;
+                           current_receiver = "";
+                         })
+                     else if tag = "deny" 
+                       Invalid *)
+
+let go_back st = 
+  match st.current_menu with 
+  | Login -> exit 0
+  | Plaza ->
+    Valid {
+      current_menu = Login; 
+      current_chat = [];
+      current_contacts = st.current_contacts;
+      current_user = st.current_user;
+      current_receiver = "";
+    } 
+  | Connect ->
+    Valid {
+      current_menu = Plaza; 
+      current_chat = [];
+      current_contacts = st.current_contacts;
+      current_user = st.current_user;
+      current_receiver = "";
+    } 
+  | Chat -> 
+    Valid {
+      current_menu = Plaza; 
+      current_chat = [];
+      current_contacts = st.current_contacts;
+      current_user = st.current_user;
+      current_receiver = "";
+    } 
 
 
 

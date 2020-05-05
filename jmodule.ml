@@ -12,8 +12,8 @@ let rec contains list item =
 (*takes two usernames, determines which one comes first alphabetically,
   concatenates them and returns userID*)
 let id_creator (name1:string) (name2:string)=
-  if name1<name2 then String.concat "" [name1;name2]
-  else  String.concat "" [name2;name1]
+  if name1<name2 then name1^"&"^name2
+  else name2^"&"^name1
 
 (* creates json file name from id *)
 let json_creator (id:string)=
