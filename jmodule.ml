@@ -32,12 +32,12 @@ let entire_file (file_name:string)=
   s
 
 (* helper function: returns index of penultimate } *)
-let penultimate_index (str:string) =
+let penultimate_index (str:string) (character:char) =
   (* find index  of first and last },
      find index of last } of string[first:last-1]*)
-  let first_last = String.rindex str '}' in
+  let first_last = String.rindex str character in
   let first_chop = Str.string_before str first_last in
-  String.rindex first_chop '}'
+  String.rindex first_chop character
 
 (* helper function: save to file *)
 let save (file:string) (text:string) =
@@ -64,9 +64,22 @@ let new_convo (sent_by:string) (text:string) (id:string)=
   let string_to_print = "{\"text history\": [{\"sent_by\":\""^sent_by^"\", \"text\":\""^text^"\"}]}" in
   save (json_creator id) (string_to_print)
 
-let editing_json (sent_by:string) (text:string) (id:string)=
+let editingtext_json (sent_by:string) (text:string) (id:string)=
   if directory_exists (json_creator id)
   then existing_convo sent_by text id
   else new_convo sent_by text id
 
+let contacts_add (new_contact:string) =
+  (* find penultimate square bracket *)
+  let contacts_contents = entire_file "contacts.json" in
+  let last_square = penultimate_index contacts_contents ']' in
+  let first = Str.string_before contacts_contents (last_square+1) in
+  let third = Str.string_after contacts_contents (last_square+1) in
+  let second = ",\""^new_contact^"\"" in
+  save ("contacts.json") (first^second^third)
+
+let editingcontacts_json (new_contact:string) =
+  if directory_exists ("contacts.json")
+  then (contacts_add new_contact)
+  else failwith "contacts file not included -> something went wrong"
 

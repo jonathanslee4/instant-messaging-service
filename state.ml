@@ -96,7 +96,7 @@ let change_state input st =
     else Invalid
   | Chat -> 
     let file = st.current_user |> Jmodule.id_creator st.current_receiver in
-    (Jmodule.editing_json st.current_user input file;
+    (Jmodule.editingtext_json st.current_user input file;
      Valid {
        current_menu = Chat; 
        current_chat = file 
