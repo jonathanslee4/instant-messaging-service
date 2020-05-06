@@ -29,7 +29,19 @@ let print_login st =
   ANSITerminal.(print_string [green]
                   "\nWelcome to the login page. What is your username?\n>> ")
 
-let print_plaza st =
+let print_new_username st = 
+  ANSITerminal.(print_string [blue]
+                  "\nPlease enter a new one-word username. This is how others will see you on the service.\n>> ")
+
+let print_new_password1 st = 
+  ANSITerminal.(print_string [blue]
+                  "\nPlease enter a new one-word password.\n>> ") 
+
+let print_new_password2 st = 
+  ANSITerminal.(print_string [blue]
+                  "\nPlease enter this password again, to confirm it is the same.\n>> ")
+
+let print_plaza st =                      
   ANSITerminal.(print_string [magenta] "\nWho would you like to chat with? Type /back to log out.\n");
   print_contacts st ((get_current_contacts st));
   ANSITerminal.(print_string [magenta] "\n>> ")
@@ -48,11 +60,17 @@ let print_new_message st=
    |h::t->output_convo_line h);
   ANSITerminal.(print_string [magenta] "\n>> ")
 
+
 let rec transition st = 
   try (
     let menu = st |> State.get_current_menu in 
     let command = (Command.parse (State.get_menu_id menu) (get_current_user st) (read_line ())) in
     match command with
+    | Sign_Up -> 
+      (match change_state "create account" st with 
+       | Valid t ->
+         print_new_username st; transition t
+       | Invalid t -> failwith "should not get here")
     | Login_As str -> 
       (match change_state str st with
        | Valid t -> 

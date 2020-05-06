@@ -21,6 +21,8 @@ val contacts_add : string -> unit
 
 val editingcontacts_json : string -> unit
 
+val account_json_add : string -> string -> unit
+
 
 
 

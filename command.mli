@@ -11,6 +11,9 @@ type request_tag
 (** The type [command] represents a player input which depends on the current
     menu. *)
 type command = 
+  | Sign_Up
+  | New_Username of phrase
+  | New_Password of phrase
   | Login_As of phrase
   | Chat_With of phrase
   | Send of phrase
@@ -37,6 +40,18 @@ exception Malformed_Chat_With
 (** Raised when a malformed command is encountered in the Plaza menu. 
     Handles the specific case where you chat yourself. *)
 exception Malformed_Chat_With_Self
+
+(** Raised when username input is empty in SignUpUsername.*)
+exception Empty_New_Username
+
+(** Raised when password input is empty in SignUpPassword.*)
+exception Empty_New_Password
+
+(** Raised when malformed username is entered in SignUpUsername.*)
+exception Malformed_New_Username
+
+(** Raised when malformed password is entered in SignUpPassword.*)
+exception Malformed_New_Password
 
 
 val get_tag_id : request_tag -> string

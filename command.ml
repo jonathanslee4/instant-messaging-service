@@ -2,7 +2,12 @@
 type phrase = string
 
 type request_tag = Add | Accept | Deny
+
+
 type command = 
+  | Sign_Up
+  | New_Username of phrase
+  | New_Password of phrase
   | Login_As of phrase
   | Chat_With of phrase
   | Send of phrase
@@ -14,10 +19,14 @@ type command =
 exception Empty_Login_Id
 exception Empty_Chat_With_Id
 exception Empty_Send
+exception Empty_New_Username
+exception Empty_New_Password
 
 exception Malformed_Login_Id
 exception Malformed_Chat_With
 exception Malformed_Chat_With_Self
+exception Malformed_New_Username
+exception Malformed_New_Password
 
 (** [remove_empty slst] is a string list with all empty strings in slst
     removed *)
@@ -49,13 +58,22 @@ let parse current_menu_id current_user_id str =
   match strlist with
   | [] -> (if current_menu_id = "login" then raise Empty_Login_Id else
            if current_menu_id = "plaza" then raise Empty_Chat_With_Id else
+           if current_menu_id = "sign_up_username" then raise Empty_New_Username else
+           if current_menu_id = "sign_up_password" then raise Empty_New_Password else
              raise Empty_Send)
   | hd :: tl -> 
     if hd = "/quit" then Quit else
     if hd = "/back" then Back else
     if current_menu_id = "login" then 
       (if List.length strlist <> 1  then raise Malformed_Login_Id else
+       if hd = "/signup" then Sign_Up else
          Login_As hd) else
+    if current_menu_id = "sign_up_username" then 
+      (if List.length strlist <> 1 then raise Malformed_New_Username else
+         New_Username hd) else 
+    if current_menu_id = "sign_up_password" then 
+      (if List.length strlist <> 1 then raise Malformed_New_Password else
+         New_Password hd) else 
     if current_menu_id = "plaza" then
       (if hd = "/connect" then Open_Requests else
        if List.length strlist <> 1 then raise Malformed_Chat_With else

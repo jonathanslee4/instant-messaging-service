@@ -69,17 +69,35 @@ let editingtext_json (sent_by:string) (text:string) (id:string)=
   then existing_convo sent_by text id
   else new_convo sent_by text id
 
-let contacts_add (new_contact:string) =
+let existing_afp (new_contact:string) =
   (* find penultimate square bracket *)
-  let contacts_contents = entire_file "contacts.json" in
+  let contacts_contents = entire_file "afp.json" in
   let last_square = penultimate_index contacts_contents ']' in
   let first = Str.string_before contacts_contents (last_square+1) in
   let third = Str.string_after contacts_contents (last_square+1) in
   let second = ",\""^new_contact^"\"" in
-  save ("contacts.json") (first^second^third)
+  save ("afp.json") (first^second^third)
 
-let editingcontacts_json (new_contact:string) =
-  if directory_exists ("contacts.json")
-  then (contacts_add new_contact)
-  else failwith "contacts file not included -> something went wrong"
+let editing_afp_json (new_contact:string) =
+  if directory_exists ("afp.json")
+  then (existing_afp new_contact)
+  else failwith "afp file not included -> something went wrong"
 
+(* THE ACCOUNT JSON EDITING IS BELOW *)
+
+(* adding password and username to json *)
+let account_json_add username password=
+  let file_contents = entire_file ("logindetails.json") in
+  let bracket_char= String.index file_contents '[' in
+  let first = Str.string_before file_contents (bracket_char+1) in
+  let third = Str.string_after file_contents (bracket_char+1) in
+  let second = "{\"username\":\""^username^"\",\"password\":\""^password^"\"}," in
+  save ("logindetails.json") (first^second^third)
+
+
+(* TO BE USED IN STATE *)
+(* user account verification -> check if u_exists=false && 
+                                      let acc_veri t (username:string) pass1 pass2=
+                                        if ((pass1=pass2) && not (user_exists username t))
+                                        then (account_json_add username pass1)
+                                        else failwith "ask to enter passwords again" *)

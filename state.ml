@@ -1,7 +1,10 @@
 open Readingjson
+open Readingaccounts
 
 type menu = 
   | Login
+  | SignUpUsername
+  | SignUpPassword
   | Plaza
   | Chat
   | Connect
@@ -17,10 +20,7 @@ type t = {
 let init_state (*j*) = { (* shouldn't take in a json *)
   current_menu = Login;
   current_chat = [];
-  (* current_contacts = Readingjson.contacts_from_json j; *)
-  current_contacts = "contacts.json" 
-                     |> Yojson.Basic.from_file 
-                     |> Readingjson.contacts_from_json;
+  current_contacts = "logindetails.json" |> Yojson.Basic.from_file |> accounts_from_json |> usernames_from_accounts;
   current_user = "";
   current_receiver = "";
 }
@@ -31,6 +31,8 @@ let get_current_menu st =
 let get_menu_id menu =
   match menu with
   | Login -> "login"
+  | SignUpUsername -> "sign_up_username"
+  | SignUpPassword -> "sign_up_password"
   | Plaza -> "plaza"
   | Chat -> "chat"
   | Connect -> "connect"
@@ -62,7 +64,35 @@ let change_state input st =
         current_user = input;
         current_receiver = "";
       }
-    else Invalid (** UPDATE in MS2: should go to a create account page *)
+    else if input = "create account" then
+      Valid {
+        current_menu = SignUpUsername; 
+        current_chat = st.current_chat; 
+        current_contacts = st.current_contacts;
+        current_user = "";
+        current_receiver = "";
+      }
+    else 
+      Invalid (** this case in main should be handled by prompting user to type/signup*)
+  | SignUpUsername ->
+    if (not(user_exists input)) then 
+      Valid {
+        current_menu = SignUpPassword; 
+        current_chat = st.current_chat; 
+        current_contacts = st.current_contacts;
+        current_user = input;
+        current_receiver = "";
+      } else Invalid
+  | SignUpPassword ->
+    Jmodule.account_json_add st.current_user input;
+    Valid {
+      current_menu = Login; 
+      current_chat = st.current_chat; 
+      current_contacts = "logindetails.json" |> Yojson.Basic.from_file 
+                         |> accounts_from_json |> usernames_from_accounts;
+      current_user = "";
+      current_receiver = "";
+    }
   | Plaza ->
     if (input = "open_requests") then 
       Valid {
@@ -129,6 +159,22 @@ let interact_w_request tag_id input st =
 let go_back st = 
   match st.current_menu with 
   | Login -> exit 0
+  | SignUpUsername -> 
+    Valid {
+      current_menu = Login; 
+      current_chat = [];
+      current_contacts = st.current_contacts;
+      current_user = "";
+      current_receiver = "";
+    }
+  | SignUpPassword -> 
+    Valid {
+      current_menu = SignUpUsername; 
+      current_chat = [];
+      current_contacts = st.current_contacts;
+      current_user = "";
+      current_receiver = "";
+    }
   | Plaza ->
     Valid {
       current_menu = Login; 
