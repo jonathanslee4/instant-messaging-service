@@ -4,6 +4,7 @@ MODULES=readingjson
 MODULES=state
 MODULES=command
 MODULES=main
+MODULES= readingaccounts
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)

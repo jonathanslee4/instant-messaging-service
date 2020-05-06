@@ -70,7 +70,7 @@ let rec transition st =
       (match change_state "create account" st with 
        | Valid t ->
          print_new_username st; transition t
-       | Invalid t -> failwith "should not get here")
+       | Invalid -> failwith "should not get here")
     | Login_As str -> 
       (match change_state str st with
        | Valid t -> 
