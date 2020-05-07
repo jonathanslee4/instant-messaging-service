@@ -21,6 +21,8 @@ val afp_add : string -> unit
 
 val pfp_add : string -> unit
 
+val pfp_empty : string -> unit
+
 val account_json_add : string -> string -> unit
 
 

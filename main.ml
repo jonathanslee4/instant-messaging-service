@@ -52,7 +52,7 @@ let print_connect st =
     ANSITerminal.(print_string [magenta]
                     "\nYou haven't received any new friend requests yet. Type add followed by a name to send a friend request! When you have received a request, you can type accept or deny followed by that person's name. \n>> ")
   else 
-    (ANSITerminal.(print_string [magenta] "\nYou have new friend request(s)!"); 
+    (ANSITerminal.(print_string [magenta] "\nYou have new friend request(s)!\n"); 
      print_contacts st (get_pending_friends (get_current_user st)))
 
 

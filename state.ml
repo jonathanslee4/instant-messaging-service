@@ -141,15 +141,17 @@ let interact_with_request tag_id input st =
 
   if not(user_exists input) then Invalid else
   if tag_id = "add" && not(List.mem input accepted_friends) then
-    (print_string "attempting to pfp add";
-     (Jmodule.pfp_add (Jmodule.id_creator input st.current_user);
-      Valid {
-        current_menu = Connect;
-        current_chat = st.current_chat;
-        current_contacts = st.current_contacts;
-        current_user = st.current_user;
-        current_receiver = st.current_receiver;
-      })) else 
+    let pfpnum = "pfp.json" |> Yojson.Basic.from_file |> Readingjson.pending_friend_pairs_from_json |> List.length in
+    if pfpnum = 0 then (Jmodule.pfp_empty (Jmodule.id_creator input st.current_user)) 
+    else
+      (Jmodule.pfp_add (Jmodule.id_creator input st.current_user));
+    Valid {
+      current_menu = Connect;
+      current_chat = st.current_chat;
+      current_contacts = st.current_contacts;
+      current_user = st.current_user;
+      current_receiver = st.current_receiver;
+    } else 
   if tag_id = "accept" && (List.mem input pending_friends) then
     (Jmodule.afp_add (Jmodule.id_creator input st.current_user);
      Valid {

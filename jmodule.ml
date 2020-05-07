@@ -2,7 +2,6 @@ open Yojson
 open Yojson.Basic.Util
 open Printf
 open Str
-
 (* helper function: returns true if list contains item, false otherwise *)
 let rec contains list item =
   match list with
@@ -79,7 +78,6 @@ let afp_add (new_contact:string) =
   save ("afp.json") (first^second^third);;
 
 let pfp_add (new_contact:string) =
-  (* find penultimate square bracket *)
   let contacts_contents = entire_file "pfp.json" in
   let last_square = String.rindex contacts_contents ']' in
   let first = Str.string_before contacts_contents (last_square) in
