@@ -84,9 +84,14 @@ let pfp_add (new_contact:string) =
   let last_square = String.rindex contacts_contents ']' in
   let first = Str.string_before contacts_contents (last_square) in
   let third = Str.string_after contacts_contents (last_square) in
-  let second = ",\""^new_contact^"\"" in
-  save ("pfp.json") (first^second^third)
+  save ("pfp.json") (first^",\""^new_contact^"\""^third)
 
+let pfp_empty (new_contact:string)=
+  let contacts_contents = entire_file "pfp.json" in
+  let last_square = String.rindex contacts_contents ']' in
+  let first = Str.string_before contacts_contents (last_square) in
+  let third = Str.string_after contacts_contents (last_square) in
+  save ("pfp.json") (first^"\""^new_contact^"\""^third)
 
 (* THE ACCOUNT JSON EDITING IS BELOW *)
 
