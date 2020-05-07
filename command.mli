@@ -6,7 +6,6 @@
     player input.  
     A [phrase] is not permitted to be the empty string. *)
 type phrase = string
-type request_tag
 
 (** The type [command] represents a player input which depends on the current
     menu. *)
@@ -18,7 +17,7 @@ type command =
   | Chat_With of phrase
   | Send of phrase
   | Open_Requests
-  | Move_Request of request_tag * phrase
+  | Move_Request of phrase * phrase
   | Back
   | Quit
 
@@ -30,6 +29,9 @@ exception Empty_Chat_With_Id
 
 (** Raised when an empty command is parsed when a user is in the Send menu. *)
 exception Empty_Send
+
+(** Raised when empty command is entered in Connect.*)
+exception Empty_Connect
 
 (** Raised when a malformed command is encountered in the Login menu. *)
 exception Malformed_Login_Id
@@ -53,8 +55,8 @@ exception Malformed_New_Username
 (** Raised when malformed password is entered in SignUpPassword.*)
 exception Malformed_New_Password
 
-
-val get_tag_id : request_tag -> string
+(** Raised when malformed command is entered in Connect.*)
+exception Malformed_Connect
 
 (** [parse str] parses a player's input into a [command], as follows. 
     Examples: 

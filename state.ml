@@ -20,7 +20,7 @@ type t = {
 let init_state (*j*) = { (* shouldn't take in a json *)
   current_menu = Login;
   current_chat = [];
-  current_contacts = "logindetails.json" |> Yojson.Basic.from_file |> accounts_from_json |> usernames_from_accounts;
+  current_contacts = [];
   current_user = "";
   current_receiver = "";
 }
@@ -48,19 +48,15 @@ let get_current_user st =
 
 type result = Valid of t | Invalid
 
-(** [is_existing_username input st] is true if the username already exists 
-    in the database aka the username is valid. *)
-let is_existing_username input st = 
-  List.mem input st.current_contacts
 
 let change_state input st = 
   match st.current_menu with 
   | Login -> 
-    if (is_existing_username input st) then 
+    if (user_exists input) then 
       Valid { 
         current_menu = Plaza; 
         current_chat = st.current_chat; 
-        current_contacts = st.current_contacts;
+        current_contacts = get_accepted_friends input;
         current_user = input;
         current_receiver = "";
       }
@@ -88,8 +84,7 @@ let change_state input st =
     Valid {
       current_menu = Login; 
       current_chat = st.current_chat; 
-      current_contacts = "logindetails.json" |> Yojson.Basic.from_file 
-                         |> accounts_from_json |> usernames_from_accounts;
+      current_contacts = [];
       current_user = "";
       current_receiver = "";
     }
@@ -102,7 +97,7 @@ let change_state input st =
         current_user = st.current_user;
         current_receiver = "";
       } else
-    if (is_existing_username input st) then 
+    if (List.mem input (get_accepted_friends input)) then 
       let filename = 
         st.current_user |> Jmodule.id_creator input |> Jmodule.json_creator in
       (if (Sys.file_exists filename) then
@@ -141,20 +136,38 @@ let change_state input st =
     failwith "should not happen"
 
 let interact_with_request tag_id input st = 
-  failwith "unimplemented"
-(* let pair = Jmodule.id_creator st.current_user input in
-   let afp = "contacts.json" |> Yojson.Basic.from_file |> Readingjson.accepted_friend_pairs_from_json in 
-   let pfp = "contacts.json" |> Yojson.Basic.from_file |> Readingjson.pending_friend_pairs_from_json in 
-   if tag = "add" && if not(List.mem pair afp) && if not(List.mem pair pfp) && if input <> st.current_user then
-                       (Valid {
-                           current_menu = Connect; 
-                           current_chat = [];
-                           current_contacts = st.current_contacts;
-                           current_user = st.current_user;
-                           current_receiver = "";
-                         })
-                     else if tag = "deny" 
-                       Invalid *)
+  let accepted_friends = get_accepted_friends input in 
+  let pending_friends = get_pending_friends input in
+
+  if not(user_exists input) then Invalid else
+  if tag_id = "add" && not(List.mem input accepted_friends) then
+    (print_string "attempting to pfp add";
+     (Jmodule.pfp_add (Jmodule.id_creator input st.current_user);
+      Valid {
+        current_menu = Connect;
+        current_chat = st.current_chat;
+        current_contacts = st.current_contacts;
+        current_user = st.current_user;
+        current_receiver = st.current_receiver;
+      })) else 
+  if tag_id = "accept" && (List.mem input pending_friends) then
+    (Jmodule.afp_add (Jmodule.id_creator input st.current_user);
+     Valid {
+       current_menu = Connect;
+       current_chat = st.current_chat;
+       current_contacts = st.current_contacts;
+       current_user = st.current_user;
+       current_receiver = st.current_receiver;
+     }) else
+  if tag_id = "deny" && (List.mem input pending_friends) then
+    Valid {
+      current_menu = Connect;
+      current_chat = st.current_chat;
+      current_contacts = st.current_contacts;
+      current_user = st.current_user;
+      current_receiver = st.current_receiver;
+    } 
+  else Invalid
 
 let go_back st = 
   match st.current_menu with 
@@ -199,10 +212,3 @@ let go_back st =
       current_user = st.current_user;
       current_receiver = "";
     } 
-
-
-
-
-
-
-

@@ -46,6 +46,16 @@ let print_plaza st =
   print_contacts st ((get_current_contacts st));
   ANSITerminal.(print_string [magenta] "\n>> ")
 
+let print_connect st =
+  let friend_request_num = List.length (get_pending_friends (get_current_user st)) in
+  if friend_request_num = 0 then
+    ANSITerminal.(print_string [magenta]
+                    "\nYou haven't received any new friend requests yet. Type add followed by a name to send a friend request! When you have received a request, you can type accept or deny followed by that person's name. \n>> ")
+  else 
+    (ANSITerminal.(print_string [magenta] "\nYou have new friend request(s)!"); 
+     print_contacts st (get_pending_friends (get_current_user st)))
+
+
 let print_whole_chat st=
   print_string "\n";
   ANSITerminal.erase Screen ;
@@ -113,8 +123,12 @@ let rec transition st =
        | Invalid -> failwith "should not happen send")
     | Open_Requests ->
       (match change_state "open_requests" st with
-       | Valid t -> failwith "unimpl but here"
+       | Valid t -> print_connect t; transition t
        | Invalid -> failwith "should not happen open requests")
+    | Move_Request (tag,str) -> 
+      (match interact_with_request tag str st with
+       | Valid t -> print_connect t; transition t
+       | Invalid -> failwith "invalid")
     | Back ->
       (match go_back st with
        | Valid t -> 
@@ -124,11 +138,11 @@ let rec transition st =
            (print_login t; transition t) else
          if next_menu_id = "plaza" then
            (print_plaza t; transition t) else
+         if next_menu_id = "sign_up_username" then 
+           (print_new_username t; transition t) else
            exit 0
        | Invalid -> failwith "should not happen")
-    | Move_Request (tag,userid)-> failwith "unimplemented move_request"
     | Quit -> exit 0 )
-
   with 
   | Empty_Login_Id -> ANSITerminal.(print_string [red] 
                                       "Whoops! You didn't enter anything. Enter a valid username to login!"); 
@@ -145,6 +159,7 @@ let rec transition st =
   | Empty_New_Password -> ANSITerminal.(print_string [red] 
                                           "Whoops! You didn't enter anything. Enter a valid username to login!"); 
     ANSITerminal.(print_string [magenta] "\n\n>> ");transition st
+  | Empty_Connect ->  ANSITerminal.(print_string [red] "You must type add, accept, or deny followed by a name."); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st
   | Malformed_Login_Id -> ANSITerminal.(print_string [red]
                                           "Uh oh that username doesn't exist. "); ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
   | Malformed_Chat_With -> ANSITerminal.(print_string [red]
@@ -155,6 +170,7 @@ let rec transition st =
                                                "Your username can only be one word, no spaces"); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st 
   | Malformed_New_Password ->  ANSITerminal.(print_string [red] 
                                                "Your password can only be one word no spaces"); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st 
+  | Malformed_Connect -> ANSITerminal.(print_string [red] "You must type add, accept, or deny followed by a name."); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =

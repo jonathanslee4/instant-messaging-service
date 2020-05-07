@@ -19,7 +19,7 @@ val editingtext_json : string -> string -> string -> unit
 
 val afp_add : string -> unit
 
-val editing_afp_json : string -> unit
+val pfp_add : string -> unit
 
 val account_json_add : string -> string -> unit
 

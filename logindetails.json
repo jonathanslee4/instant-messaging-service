@@ -1,5 +1,21 @@
 {
-  "users": [{"username":"martha","password":"12345"},
+  "users": [
+    {
+      "username": "bob",
+      "password": "bob"
+    },
+    {
+      "username": "terrie",
+      "password": "324"
+    },
+    {
+      "username": "andrew",
+      "password": "house"
+    },
+    {
+      "username": "martha",
+      "password": "12345"
+    },
     {
       "username": "nate",
       "password": "cs3110"
@@ -10,7 +26,7 @@
     },
     {
       "username": "jonny",
-      "password": "ilovejessica"
+      "password": "iloveoranges"
     },
     {
       "username": "wemi",

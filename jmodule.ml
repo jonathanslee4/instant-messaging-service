@@ -78,10 +78,15 @@ let afp_add (new_contact:string) =
   let second = ",\""^new_contact^"\"" in
   save ("afp.json") (first^second^third)
 
-let editing_afp_json (new_contact:string) =
-  if directory_exists ("afp.json")
-  then (afp_add new_contact)
-  else failwith "contacts file not included -> something went wrong"
+let pfp_add (new_contact:string) =
+  (* find penultimate square bracket *)
+  let contacts_contents = entire_file "pfp.json" in
+  let last_square = penultimate_index contacts_contents ']' in
+  let first = Str.string_before contacts_contents (last_square+1) in
+  let third = Str.string_after contacts_contents (last_square+1) in
+  let second = ",\""^new_contact^"\"" in
+  save ("pfp.json") (first^second^third)
+
 
 (* THE ACCOUNT JSON EDITING IS BELOW *)
 
