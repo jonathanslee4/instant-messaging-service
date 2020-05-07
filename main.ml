@@ -71,12 +71,25 @@ let rec transition st =
        | Valid t ->
          print_new_username st; transition t
        | Invalid -> failwith "should not get here")
+    | New_Username str -> 
+      (match change_state str st with 
+       | Valid t -> print_new_password1 st; transition t
+       | Invalid -> ANSITerminal.(print_string [magenta]
+                                    "\n\nSorry! That username is already taken! Try typing another!\n\n>> ");
+         transition st
+      )
+    | New_Password str -> 
+      (match change_state str st with 
+       | Valid t -> ANSITerminal.(print_string [green]
+                                    "Congratulations! You've successfully created an account"); print_login st;transition t 
+       | Invalid -> failwith ("should not get here ")
+      )
     | Login_As str -> 
       (match change_state str st with
        | Valid t -> 
          print_plaza t; transition t
        | Invalid -> ANSITerminal.(print_string [magenta]
-                                    "\n\nThat username doesn't exist. \n\n>> ");
+                                    ("\n\nThat username doesn't exist. Type " ^ "/signup " ^ "to create a new account. \n\n>>"));
          transition st)
     | Chat_With str ->
       (* display contents of previous chat, reverse list *)

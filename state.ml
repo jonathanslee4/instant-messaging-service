@@ -140,7 +140,7 @@ let change_state input st =
   | Connect -> 
     failwith "should not happen"
 
-let interact_w_request tag_id input st = 
+let interact_with_request tag_id input st = 
   failwith "unimplemented"
 (* let pair = Jmodule.id_creator st.current_user input in
    let afp = "contacts.json" |> Yojson.Basic.from_file |> Readingjson.accepted_friend_pairs_from_json in 

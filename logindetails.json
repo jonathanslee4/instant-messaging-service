@@ -1,6 +1,10 @@
 {
   "users": [
     {
+      "username": "nate",
+      "password": "cs3110"
+    },
+    {
       "username": "jessica",
       "password": "kool"
     },

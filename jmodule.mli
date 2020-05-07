@@ -17,9 +17,9 @@ val new_convo : string -> string -> string -> unit
 
 val editingtext_json : string -> string -> string -> unit
 
-val contacts_add : string -> unit
+val afp_add : string -> unit
 
-val editingcontacts_json : string -> unit
+val editing_afp_json : string -> unit
 
 val account_json_add : string -> string -> unit
 
