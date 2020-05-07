@@ -69,18 +69,18 @@ let editingtext_json (sent_by:string) (text:string) (id:string)=
   then existing_convo sent_by text id
   else new_convo sent_by text id
 
-let contacts_add (new_contact:string) =
+let afp_add (new_contact:string) =
   (* find penultimate square bracket *)
-  let contacts_contents = entire_file "contacts.json" in
+  let contacts_contents = entire_file "afp.json" in
   let last_square = penultimate_index contacts_contents ']' in
   let first = Str.string_before contacts_contents (last_square+1) in
   let third = Str.string_after contacts_contents (last_square+1) in
   let second = ",\""^new_contact^"\"" in
-  save ("contacts.json") (first^second^third)
+  save ("afp.json") (first^second^third)
 
-let editing_contacts_json (new_contact:string) =
-  if directory_exists ("contacts.json")
-  then (contacts_add new_contact)
+let editing_afp_json (new_contact:string) =
+  if directory_exists ("afp.json")
+  then (afp_add new_contact)
   else failwith "contacts file not included -> something went wrong"
 
 (* THE ACCOUNT JSON EDITING IS BELOW *)

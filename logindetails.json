@@ -1,5 +1,5 @@
 {
-  "users": [
+  "users": [{"username":"martha","password":"12345"},
     {
       "username": "nate",
       "password": "cs3110"
@@ -9,8 +9,8 @@
       "password": "kool"
     },
     {
-      "username": "jessica",
-      "password": "cool"
+      "username": "jonny",
+      "password": "ilovejessica"
     },
     {
       "username": "wemi",

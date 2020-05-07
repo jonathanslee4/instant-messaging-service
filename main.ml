@@ -140,12 +140,21 @@ let rec transition st =
                                   "Uh oh..you didn't type anything to send! Try something more meaningful.");
     ANSITerminal.(print_string [magenta] "\n\n>> ");
     transition st
+  | Empty_New_Username -> ANSITerminal.(print_string [red] 
+                                          "Your username can't be empty"); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st 
+  | Empty_New_Password -> ANSITerminal.(print_string [red] 
+                                          "Whoops! You didn't enter anything. Enter a valid username to login!"); 
+    ANSITerminal.(print_string [magenta] "\n\n>> ");transition st
   | Malformed_Login_Id -> ANSITerminal.(print_string [red]
                                           "Uh oh that username doesn't exist. "); ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
   | Malformed_Chat_With -> ANSITerminal.(print_string [red]
                                            "Uh oh that person doesn't exist. Try one of your existing contacts!"); ANSITerminal.(print_string [magenta] "\n\n>>"); transition st
   | Malformed_Chat_With_Self -> ANSITerminal.(print_string [red]
                                                 "Ummmm you can't chat with yourself! Silly"); ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
+  | Malformed_New_Username ->  ANSITerminal.(print_string [red] 
+                                               "Your username can only be one word, no spaces"); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st 
+  | Malformed_New_Password ->  ANSITerminal.(print_string [red] 
+                                               "Your password can only be one word no spaces"); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st 
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
