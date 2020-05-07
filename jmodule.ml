@@ -72,7 +72,7 @@ let editingtext_json (sent_by:string) (text:string) (id:string)=
 let afp_add (new_contact:string) =
   (* find penultimate square bracket *)
   let contacts_contents = entire_file "afp.json" in
-  let last_square = penultimate_index contacts_contents ']' in
+  let last_square = String.rindex contacts_contents ']' in
   let first = Str.string_before contacts_contents (last_square+1) in
   let third = Str.string_after contacts_contents (last_square+1) in
   let second = ",\""^new_contact^"\"" in
@@ -81,7 +81,7 @@ let afp_add (new_contact:string) =
 let pfp_add (new_contact:string) =
   (* find penultimate square bracket *)
   let contacts_contents = entire_file "pfp.json" in
-  let last_square = penultimate_index contacts_contents ']' in
+  let last_square = String.rindex contacts_contents ']' in
   let first = Str.string_before contacts_contents (last_square+1) in
   let third = Str.string_after contacts_contents (last_square+1) in
   let second = ",\""^new_contact^"\"" in
