@@ -82,8 +82,8 @@ let pfp_add (new_contact:string) =
   (* find penultimate square bracket *)
   let contacts_contents = entire_file "pfp.json" in
   let last_square = String.rindex contacts_contents ']' in
-  let first = Str.string_before contacts_contents (last_square+1) in
-  let third = Str.string_after contacts_contents (last_square+1) in
+  let first = Str.string_before contacts_contents (last_square) in
+  let third = Str.string_after contacts_contents (last_square) in
   let second = ",\""^new_contact^"\"" in
   save ("pfp.json") (first^second^third)
 
