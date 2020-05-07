@@ -1,10 +1,6 @@
 # 
-MODULES=jmodule
-MODULES=readingjson
-MODULES=state
-MODULES=command
-MODULES=main
-MODULES= readingaccounts
+MODULES=jmodule readingjson state command main readingaccounts
+
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
