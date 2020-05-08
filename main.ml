@@ -158,180 +158,220 @@ let print_exception_message msg =
   ANSITerminal.(print_string [red] ("\n"^msg)); 
   ANSITerminal.(print_string [red] "\n>> ")
 
-(** [transition st] reads line and matches against the resulting command given 
-    st. If the command is empty, malformed, or invalid, a warning message 
-    is printed and transition is run again. Otherwise, transition prints
-     an appropriate message and runs again with the updated state.*)
-let rec transition st = 
-  try (
-    let menu = st |> State.get_current_menu in 
-    let command = (Command.parse (State.get_menu_id menu)
-                     (get_current_user st) (read_line ())) in
-    match command with
-    | Sign_Up -> 
-      (match change_state "create account" st with 
-       | Valid t ->
-         ANSITerminal.erase Screen;
-         ANSITerminal.set_cursor 1 1;
-         print_new_username st; transition t
-       | Invalid -> failwith "should not get here")
-    | New_Username str -> 
-      (match change_state str st with 
-       | Valid t -> print_new_password1 st; transition t
-       | Invalid -> ANSITerminal.(print_string [magenta]
-                                    "\n\nSorry! That username is already \
-                                     taken! Try typing another!\n\n>> ");
-         transition st
-      )
-    | New_Password str -> 
-      (match change_state str st with 
-       | Valid t -> ANSITerminal.(print_string [green]
-                                    "You've successfully created \
-                                     your new account! Welcome!\n"); 
-         ANSITerminal.erase Screen;
-         ANSITerminal.set_cursor 1 1;
-         print_login ();transition t 
-       | Invalid -> failwith ("should not get here ")
-      )
-    | Login_As str -> 
-      (match change_state str st with
-       | Valid t -> 
-         print_login_password t; transition t
-       | Invalid -> ANSITerminal.(print_string [magenta]
-                                    ("\nThat username doesn't exist. \
-                                      Type " ^ "/signup " ^ "to \
-                                                             create a new \
-                                                             account. \n>> "));
-         transition st)
-    | Login_Password str ->
-      (match change_state str st with
-       | Valid t -> 
-         ANSITerminal.erase Screen;
-         ANSITerminal.set_cursor 1 1;
-         ANSITerminal.(print_string [green]
-                         "\nYou are now logged in!\n");print_plaza t; 
-         transition t
-       | Invalid ->  ANSITerminal.(print_string [red]
-                                     ("\nIncorrect password. \
-                                       \n>> ")); transition st)
-    | Chat_With str ->
-      (* display contents of previous chat, reverse list *)
-      (match change_state str st with
-       | Valid t -> 
-         print_whole_chat t; transition t
-       | Invalid -> ANSITerminal.(print_string [magenta]
-                                    "\nYou don't have a contact with \
-                                     that name. Type /connect to add \
-                                     new contacts, or chat with a \
-                                     friend!\n>> ");
-         transition st)
-    | Send str ->
-      (* display most recent chat *)
-      (match change_state str st with
-       | Valid t -> 
-         (print_new_message t);
-         transition t
-       | Invalid -> failwith "should not happen send")
-    | Open_Requests ->
-      (match change_state "open_requests" st with 
-       | Valid t -> print_connect t; transition t
-       | Invalid -> failwith "should not happen open requests") 
-    | Move_Request (tag,str) -> 
-      (match interact_with_request tag str st with
-       | PValid t -> 
-         if tag = "add" then print_successful_add str
-         else if tag = "accept" then print_successful_accept str;
-         transition t
-       | Invalid_Unrecognizable -> 
-         ANSITerminal.(print_string [magenta]
-                         "\nYou must type add, accept, or \
-                          deny followed by a name.\n>> ");
-         transition st
-       | Invalid_Add_Already_Friended -> 
-         ANSITerminal.(print_string [magenta]
-                         "\nYou are already friends with this user. \n>> ");
-         transition st
-       | Invalid_Add_Already_Added -> 
-         ANSITerminal.(print_string [magenta]
-                         "\nYou have already added this user. \n>> ");
-         transition st
-       | Invalid_Add_Pending-> 
-         ANSITerminal.(print_string [magenta]
-                         "\nYou have already received a friend request from \
-                          this user! Type accept <name> to accept the request.\
-                          \n>> ");
-         transition st
-       | Invalid_Existless -> 
-         ANSITerminal.(print_string [magenta]
-                         "\nThis user doesn't exist. \n>> ");
-         transition st)
-    | Back ->
-      (match go_back st with
-       | Valid t -> 
-         let next_menu_id = 
-           t |> get_current_menu |> get_menu_id in
-         ANSITerminal.erase Screen;
-         ANSITerminal.set_cursor 1 1;
-         (if next_menu_id = "login" then
-            (print_login ()) else
-          if next_menu_id = "plaza" then
-            (print_plaza t) else
-          if next_menu_id = "sign_up_username" then 
-            (print_new_username t) else
-            exit 0);
-         transition t
-       | Invalid -> failwith "should not happen")
-    | Quit -> exit 0 )
-  with 
+(** [exception_handler exn] pattern matches against [exn] and prints out the
+    appropriate error message. *)
+let exception_handler exn = 
+  match cmd with ->
   | Empty_Login_Id -> 
     print_exception_message "Whoops! You didn't enter anything. \
                              Enter a valid username to login!"; 
-    transition st
   | Empty_Login_Password -> 
     print_exception_message  "You entered a blank password! Try again";
-    transition st 
   | Empty_Chat_With_Id -> 
     print_exception_message "Whoops! You can't chat someone with no name!!";
-    transition st 
   | Empty_Send -> 
     print_exception_message "Uh oh..you didn't type anything to send! \
                              Try something more meaningful.";
-    transition st
   | Empty_New_Username -> 
     print_exception_message "Your username can't be empty";
-    transition st 
   | Empty_New_Password ->
     print_exception_message "Whoops! You didn't enter anything. \
                              Enter a valid username to login!";
-    transition st
   | Empty_Connect ->  
     print_exception_message  "You must type add, accept, or deny followed by a \
                               name.";
-    transition st
   | Malformed_Login_Id -> 
     print_exception_message "That username doesn't exist.";
-    transition st
   | Malformed_Login_Password -> 
     print_exception_message "Passwords should only have one space, so that \
                              can't be it.";
-    transition st
   | Malformed_Chat_With ->
     print_exception_message "Uh oh that person doesn't exist. Try one of your \
                              existing contacts!";
-    transition st
   | Malformed_Chat_With_Self -> 
     print_exception_message "Ummmm you can't chat with yourself! Silly";
-    transition st
   | Malformed_New_Username ->  
     print_exception_message "Your username can only be one word, no spaces";
-    transition st 
   | Malformed_New_Password ->  
     print_exception_message "Your password can only be one word no spaces";
-    transition st 
   | Malformed_Connect -> 
     print_exception_message "You must type add, accept, or deny followed by \
                              a name.";
-    transition st
+
+    (** [transition st] reads line and matches against the resulting command given 
+        st. If the command is empty, malformed, or invalid, a warning message 
+        is printed and transition is run again. Otherwise, transition prints
+         an appropriate message and runs again with the updated state.*)
+    let rec transition st = 
+      try (
+        let menu = st |> State.get_current_menu in 
+        let command = (Command.parse (State.get_menu_id menu)
+                         (get_current_user st) (read_line ())) in
+        match command with
+        | Sign_Up -> 
+          (match change_state "create account" st with 
+           | Valid t ->
+             ANSITerminal.erase Screen;
+             ANSITerminal.set_cursor 1 1;
+             print_new_username st; transition t
+           | Invalid -> failwith "should not get here")
+        | New_Username str -> 
+          (match change_state str st with 
+           | Valid t -> print_new_password1 st; transition t
+           | Invalid -> ANSITerminal.(print_string [magenta]
+                                        "\n\nSorry! That username is already \
+                                         taken! Try typing another!\n\n>> ");
+             transition st
+          )
+        | New_Password str -> 
+          (match change_state str st with 
+           | Valid t -> ANSITerminal.(print_string [green]
+                                        "You've successfully created \
+                                         your new account! Welcome!\n"); 
+             ANSITerminal.erase Screen;
+             ANSITerminal.set_cursor 1 1;
+             print_login ();transition t 
+           | Invalid -> failwith ("should not get here ")
+          )
+        | Login_As str -> 
+          (match change_state str st with
+           | Valid t -> 
+             print_login_password t; transition t
+           | Invalid -> ANSITerminal.(print_string [magenta]
+                                        ("\nThat username doesn't exist. \
+                                          Type " ^ "/signup " ^ "to \
+                                                                 create a new \
+                                                                 account. \n>> "));
+             transition st)
+        | Login_Password str ->
+          (match change_state str st with
+           | Valid t -> 
+             ANSITerminal.erase Screen;
+             ANSITerminal.set_cursor 1 1;
+             ANSITerminal.(print_string [green]
+                             "\nYou are now logged in!\n");print_plaza t; 
+             transition t
+           | Invalid ->  ANSITerminal.(print_string [red]
+                                         ("\nIncorrect password. \
+                                           \n>> ")); transition st)
+        | Chat_With str ->
+          (* display contents of previous chat, reverse list *)
+          (match change_state str st with
+           | Valid t -> 
+             print_whole_chat t; transition t
+           | Invalid -> ANSITerminal.(print_string [magenta]
+                                        "\nYou don't have a contact with \
+                                         that name. Type /connect to add \
+                                         new contacts, or chat with a \
+                                         friend!\n>> ");
+             transition st)
+        | Send str ->
+          (* display most recent chat *)
+          (match change_state str st with
+           | Valid t -> 
+             (print_new_message t);
+             transition t
+           | Invalid -> failwith "should not happen send")
+        | Open_Requests ->
+          (match change_state "open_requests" st with 
+           | Valid t -> print_connect t; transition t
+           | Invalid -> failwith "should not happen open requests") 
+        | Move_Request (tag,str) -> 
+          (match interact_with_request tag str st with
+           | PValid t -> 
+             if tag = "add" then print_successful_add str
+             else if tag = "accept" then print_successful_accept str;
+             transition t
+           | Invalid_Unrecognizable -> 
+             ANSITerminal.(print_string [magenta]
+                             "\nYou must type add, accept, or \
+                              deny followed by a name.\n>> ");
+             transition st
+           | Invalid_Add_Already_Friended -> 
+             ANSITerminal.(print_string [magenta]
+                             "\nYou are already friends with this user. \n>> ");
+             transition st
+           | Invalid_Add_Already_Added -> 
+             ANSITerminal.(print_string [magenta]
+                             "\nYou have already added this user. \n>> ");
+             transition st
+           | Invalid_Add_Pending-> 
+             ANSITerminal.(print_string [magenta]
+                             "\nYou have already received a friend request from \
+                              this user! Type accept <name> to accept the request.\
+                              \n>> ");
+             transition st
+           | Invalid_Existless -> 
+             ANSITerminal.(print_string [magenta]
+                             "\nThis user doesn't exist. \n>> ");
+             transition st)
+        | Back ->
+          (match go_back st with
+           | Valid t -> 
+             let next_menu_id = 
+               t |> get_current_menu |> get_menu_id in
+             ANSITerminal.erase Screen;
+             ANSITerminal.set_cursor 1 1;
+             (if next_menu_id = "login" then
+                (print_login ()) else
+              if next_menu_id = "plaza" then
+                (print_plaza t) else
+              if next_menu_id = "sign_up_username" then 
+                (print_new_username t) else
+                exit 0);
+             transition t
+           | Invalid -> failwith "should not happen")
+        | Quit -> exit 0 )
+      with 
+      | Empty_Login_Id -> 
+        print_exception_message "Whoops! You didn't enter anything. \
+                                 Enter a valid username to login!"; 
+        transition st
+      | Empty_Login_Password -> 
+        print_exception_message  "You entered a blank password! Try again";
+        transition st 
+      | Empty_Chat_With_Id -> 
+        print_exception_message "Whoops! You can't chat someone with no name!!";
+        transition st 
+      | Empty_Send -> 
+        print_exception_message "Uh oh..you didn't type anything to send! \
+                                 Try something more meaningful.";
+        transition st
+      | Empty_New_Username -> 
+        print_exception_message "Your username can't be empty";
+        transition st 
+      | Empty_New_Password ->
+        print_exception_message "Whoops! You didn't enter anything. \
+                                 Enter a valid username to login!";
+        transition st
+      | Empty_Connect ->  
+        print_exception_message  "You must type add, accept, or deny followed by a \
+                                  name.";
+        transition st
+      | Malformed_Login_Id -> 
+        print_exception_message "That username doesn't exist.";
+        transition st
+      | Malformed_Login_Password -> 
+        print_exception_message "Passwords should only have one space, so that \
+                                 can't be it.";
+        transition st
+      | Malformed_Chat_With ->
+        print_exception_message "Uh oh that person doesn't exist. Try one of your \
+                                 existing contacts!";
+        transition st
+      | Malformed_Chat_With_Self -> 
+        print_exception_message "Ummmm you can't chat with yourself! Silly";
+        transition st
+      | Malformed_New_Username ->  
+        print_exception_message "Your username can only be one word, no spaces";
+        transition st 
+      | Malformed_New_Password ->  
+        print_exception_message "Your password can only be one word no spaces";
+        transition st 
+      | Malformed_Connect -> 
+        print_exception_message "You must type add, accept, or deny followed by \
+                                 a name.";
+        transition st
 
 (** [main ()] prompts for the instant messaging interface to 
     play, then starts it. *)
