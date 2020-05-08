@@ -2,23 +2,18 @@
    COMMAND MODULE: Parsing of player commands.
 *)
 
-(** The type [phrase] represents the phrase that is a 
-    user's input.  
-    A [phrase] is not permitted to be the empty string. *)
-type phrase = string
-
 (** The type [command] represents a player input which depends on the current
     menu. *)
 type command = 
   | Sign_Up
-  | New_Username of phrase
-  | New_Password of phrase
-  | Login_As of phrase
-  | Login_Password of phrase
-  | Chat_With of phrase
-  | Send of phrase
+  | New_Username of string
+  | New_Password of string
+  | Login_As of string
+  | Login_Password of string
+  | Chat_With of string
+  | Send of string
   | Open_Requests
-  | Move_Request of phrase * phrase
+  | Move_Request of string * string
   | Back
   | Quit
 

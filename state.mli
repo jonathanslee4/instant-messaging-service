@@ -21,7 +21,8 @@ val init_state : t
 (** The type representing the result of an attempted transition. *)
 type result = Valid of t | Invalid
 
-(** TODO:Jonny *)
+(** The type representing the output of an attempted friend request send,
+    accept, or deny. *)
 type result_prime = PValid of t 
                   | Invalid_Existless 
                   | Invalid_Add_Already_Added
@@ -57,8 +58,13 @@ val get_current_chat : t -> Readingjson.message list
         friend *)
 val change_state : string -> t -> result 
 
-(** TODO:Jonny *)
+(** [interact_with_request tag input t] is [Valid t] if [input] from the current
+    menu is not invalid. Several invalid variations of result_prime can be 
+    raised depending on the input and tag. For instance, if the user attempts 
+    to send a friend request to a user who is already a friend, 
+    Invalid_Add_Already_Friended will be outputted.*)
 val interact_with_request : string -> string -> t -> result_prime
 
-(** TODO:Jonny *)
+(** [go_back st] is [Valid t] where t represents the state after the user has
+    returned to the previous menu. *)
 val go_back : t -> result

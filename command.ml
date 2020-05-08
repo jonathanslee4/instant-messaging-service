@@ -1,15 +1,13 @@
-type phrase = string
-
 type command = 
   | Sign_Up
-  | New_Username of phrase
-  | New_Password of phrase
-  | Login_As of phrase
-  | Login_Password of phrase
-  | Chat_With of phrase
-  | Send of phrase
+  | New_Username of string
+  | New_Password of string
+  | Login_As of string
+  | Login_Password of string
+  | Chat_With of string
+  | Send of string
   | Open_Requests
-  | Move_Request of phrase * phrase
+  | Move_Request of string * string
   | Back
   | Quit
 
@@ -42,12 +40,6 @@ let rec remove_empty slst =
 let striplist str = 
   if str = "" then [] else
     str |> String.split_on_char ' ' |> remove_empty
-
-(** TODO jonny document this *)
-let get_string strlist=
-  match strlist with
-  | [] -> failwith "string list must have 2 elements"
-  | hd :: tl -> hd
 
 let parse current_menu_id current_user_id str =
   let strlist = striplist str in
@@ -84,7 +76,7 @@ let parse current_menu_id current_user_id str =
       (* Current menus is Chat *) else
     if current_menu_id = "connect" then 
       (if List.length strlist <> 2 then raise Malformed_Connect else
-       if hd = "add" then Move_Request ("add", get_string tl) else
-       if hd = "accept" then Move_Request ("accept",get_string tl) else
-         Move_Request ("deny", get_string tl))
+       if hd = "add" then Move_Request ("add", List.hd tl) else
+       if hd = "accept" then Move_Request ("accept", List.hd tl) else
+         Move_Request ("deny", List.hd tl))
     else Send (String.concat " " (strlist))

@@ -77,7 +77,7 @@ let change_state input st =
         current_receiver = "";
       }
     else 
-      Invalid (** this case in main should be handled by prompting user to type/signup*)
+      Invalid
   | LoginVerify-> 
     if "logindetails.json" 
        |> Yojson.Basic.from_file 
@@ -91,7 +91,7 @@ let change_state input st =
         current_user = st.current_user;
         current_receiver = "";
       }
-    else Invalid (* this case in main should be handled by telling user that is the incorrect password and to try again *)
+    else Invalid
   | SignUpUsername ->
     if (not(user_exists input)) then 
       Valid {
@@ -166,7 +166,8 @@ let interact_with_request tag_id input st =
     if not(user_exists input) then Invalid_Existless else
     if List.mem input accepted_friends then Invalid_Add_Already_Friended else
     if List.mem ((Jmodule.id_creator st.current_user input)^"&"^
-                 st.current_user) pending_friends_with_tag then Invalid_Add_Already_Added else
+                 st.current_user) pending_friends_with_tag then
+      Invalid_Add_Already_Added else
     if List.mem ((Jmodule.id_creator st.current_user input)^"&"^
                  input) pending_friends_with_tag then Invalid_Add_Pending else
       let pfpnum = 
