@@ -5,11 +5,7 @@ type account = {
 (** TODO: question is type accounts even necessary *)
 type accounts = account list
 
-val contains :'a list -> 'a -> bool
-
 val accounts_from_json : Yojson.Basic.t -> account list
-
-val usernames_from_accounts : account list -> string list
 
 val user_exists : string -> bool
 
