@@ -80,10 +80,3 @@ let get_accepted_friends username =
 let get_pending_friends username =
   let slist = pending_friend_pairs_from_json (Yojson.Basic.from_file "pfp.json") in
   slist |> expand |> List.map list_to_triple |> filter_triple username
-
-(* helper function: takes sent_by and text and displays message*)
-let output_convo_line message=
-  ANSITerminal.(print_string [yellow]
-                  (message.sent_by^": "));
-  ANSITerminal.(print_string [green]
-                  (message.text^"\n"))   

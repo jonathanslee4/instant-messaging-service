@@ -20,13 +20,33 @@ let rec print_contacts st con_list =
       (print_endline(hd); 
        print_contacts st tl)
 
+
+let output_sender_line text =
+  let (w,h) = ANSITerminal.size() in
+  let length = (String.length text + 4) in
+  (* let current_cursor = ANSITerminal.save_cursor in  *)
+  ANSITerminal.move_cursor (w-length) 0;
+  ANSITerminal.(print_string [on_blue]("Me: " ^ text));
+  print_endline("");
+  print_endline("")
+
+let output_receiver_line username text =
+  ANSITerminal.(print_string [on_magenta] (username ^ ": " ^ text));
+  print_endline("");
+  print_endline("")
+
 (** [print_convo t] outputs each text message in t, separating the user name and
     text body components by color. *)
-let rec print_convo texts=
+let rec print_convo texts st =
   match texts with
   |[]->print_string ""
   |x::xs-> 
-    (output_convo_line x; (print_convo xs))
+    let sender = get_sent_by x in
+    let msg = get_text x in 
+    if(sender = get_current_user st) then (output_sender_line msg; print_convo xs st)
+    else 
+      (output_receiver_line sender msg; (print_convo xs st))
+
 
 (** [print_login] prints the login menu opening text. *)
 let print_login () =
@@ -110,17 +130,35 @@ let print_successful_accept str =
 let print_whole_chat st=
   print_string "\n";
   ANSITerminal.erase Screen;
-  print_convo (List.rev(get_current_chat st));
+  ANSITerminal.set_cursor 1 1;
+  print_convo (st |> get_current_chat |> List.rev) st;
   ANSITerminal.(print_string [magenta] 
-                  "Type your message or /back to return to your contacts.\n>> ")
+                  "\n>> ")
 
 (** [print_new_message st] prints the most recent text messa *)
+(* let print_new_message st=
+   print_string "\n";
+   (match (get_current_chat st) with
+   |[]->print_string ""
+   |h::t->output_convo_line h (get_current_user st);
+     ANSITerminal.(print_string [magenta] "\n>> ")) *)
+
 let print_new_message st=
   print_string "\n";
   (match (get_current_chat st) with
    |[]->print_string ""
-   |h::t->output_convo_line h);
-  ANSITerminal.(print_string [magenta] "\n>> ")
+   |h::xs-> 
+     let (x,y) = ANSITerminal.pos_cursor () in
+     let target2 = -(y+3) in
+     ANSITerminal.move_cursor 0 target2;
+     ANSITerminal.erase Below;
+     let msg = get_text h in 
+     (*if(sender = get_current_user st) then *)
+     output_sender_line msg; 
+     ANSITerminal.(print_string [magenta] "\n>> "))
+(* else 
+   (output_receiver_line sender msg;
+   ANSITerminal.(print_string [magenta] "\n>> "))) *)
 
 (** [print_exception_message msg] prints a formatted exception message that 
     says [msg]. *)
@@ -138,6 +176,7 @@ let rec transition st =
       (match change_state "create account" st with 
        | Valid t ->
          ANSITerminal.erase Screen;
+         ANSITerminal.set_cursor 1 1;
          print_new_username st; transition t
        | Invalid -> failwith "should not get here")
     | New_Username str -> 
@@ -154,6 +193,7 @@ let rec transition st =
                                     "You've successfully created \
                                      your new account! Welcome!\n"); 
          ANSITerminal.erase Screen;
+         ANSITerminal.set_cursor 1 1;
          print_login ();transition t 
        | Invalid -> failwith ("should not get here ")
       )
@@ -171,6 +211,7 @@ let rec transition st =
       (match change_state str st with
        | Valid t -> 
          ANSITerminal.erase Screen;
+         ANSITerminal.set_cursor 1 1;
          ANSITerminal.(print_string [green]
                          "\nYou are now logged in!\n");print_plaza t; 
          transition t
@@ -192,7 +233,8 @@ let rec transition st =
       (* display most recent chat *)
       (match change_state str st with
        | Valid t -> 
-         (print_new_message t); transition t
+         (print_new_message t);
+         transition t
        | Invalid -> failwith "should not happen send")
     | Open_Requests ->
       (match change_state "open_requests" st with 
@@ -233,6 +275,7 @@ let rec transition st =
          let next_menu_id = 
            t |> get_current_menu |> get_menu_id in
          ANSITerminal.erase Screen;
+         ANSITerminal.set_cursor 1 1;
          (if next_menu_id = "login" then
             (print_login ()) else
           if next_menu_id = "plaza" then
