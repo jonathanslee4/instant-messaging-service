@@ -93,9 +93,9 @@ let print_connect st =
     List.length (get_pending_friends (get_current_user st)) in
   if friend_request_num = 0 then
     ANSITerminal.(print_string [yellow]
-                    "\nYou haven't received any new friend requests yet.\
-                     Type add followed by a name to send a friend request!\
-                     When you have received a request, you can type accept or\
+                    "\nYou haven't received any new friend requests yet.\n\
+                     Type add followed by a name to send a friend request!\n\
+                     When you have received a request, you can type accept or \
                      deny followed by that person's name.
                      \n>> ")
   else if friend_request_num = 1 then
@@ -123,7 +123,10 @@ let print_successful_accept str =
                                                            contacts."));
   ANSITerminal.(print_string [yellow] "\n\n>> ")
 
-
+let print_successful_deny str = 
+  ANSITerminal.(print_string [green]
+                  ("\nYou denied "^str^"'s friend request."));
+  ANSITerminal.(print_string [yellow] "\n\n>> ")
 
 (** [print_whole_chat st] prints the conversation between the user and the
     receiver. *)
@@ -148,9 +151,6 @@ let print_new_message st=
      (*if(sender = get_current_user st) then *)
      output_sender_line msg; 
      ANSITerminal.(print_string [white] "\n>> "))
-(* else 
-   (output_receiver_line sender msg;
-   ANSITerminal.(print_string [magenta] "\n>> "))) *)
 
 (** [print_exception_message msg] prints a formatted exception message that 
     says [msg]. *)
@@ -240,7 +240,8 @@ let rec transition st =
       (match interact_with_request tag str st with
        | PValid t -> 
          if tag = "add" then print_successful_add str
-         else if tag = "accept" then print_successful_accept str;
+         else if tag = "accept" then print_successful_accept str
+         else if tag = "deny" then print_successful_deny str;
          transition t
        | Invalid_Unrecognizable -> 
          ANSITerminal.(print_string [magenta]
