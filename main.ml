@@ -132,7 +132,7 @@ let print_whole_chat st=
   ANSITerminal.erase Screen;
   ANSITerminal.set_cursor 1 1;
   print_convo (st |> get_current_chat |> List.rev) st;
-  ANSITerminal.(print_string [magenta] 
+  ANSITerminal.(print_string [white] 
                   "\n>> ")
 
 (** [print_new_message st] prints the most recent text messa *)
@@ -144,18 +144,17 @@ let print_whole_chat st=
      ANSITerminal.(print_string [magenta] "\n>> ")) *)
 
 let print_new_message st=
-  print_string "\n";
   (match (get_current_chat st) with
    |[]->print_string ""
    |h::xs-> 
-     let (x,y) = ANSITerminal.pos_cursor () in
-     let target2 = -(y+3) in
-     ANSITerminal.move_cursor 0 target2;
+     (* let (x,y) = ANSITerminal.pos_cursor () in
+        let target2 = (y-10) in *)
+     ANSITerminal.move_cursor 0 (-2);
      ANSITerminal.erase Below;
      let msg = get_text h in 
      (*if(sender = get_current_user st) then *)
      output_sender_line msg; 
-     ANSITerminal.(print_string [magenta] "\n>> "))
+     ANSITerminal.(print_string [white] "\n>> "))
 (* else 
    (output_receiver_line sender msg;
    ANSITerminal.(print_string [magenta] "\n>> "))) *)
