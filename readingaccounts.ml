@@ -32,12 +32,9 @@ let rec usernames_from_accounts acclist =
 let user_exists usr =
   List.mem usr ("logindetails.json" |> Yojson.Basic.from_file |> accounts_from_json |> usernames_from_accounts)
 
-(* user password verification
-   let password_veri pass1 pass2=
-   if pass1=pass2 then true
-   else false *)
+let rec is_verified_password usr pwd actlist = 
+  match actlist with
+  | [] -> failwith "Username not found in accounts database."
+  | {username = username; password = password}:: tl -> 
+    if username = usr then password = pwd else is_verified_password usr pwd tl
 
-(* let rec password_again pass1 pass2=
-   if (password_veri pass1 pass2)
-   then failwith("unimplemented")
-   else password_again pass1 pass2 *)
