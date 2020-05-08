@@ -4,7 +4,7 @@ open Readingjson
 open Jmodule
 
 (** [print_contacts st con_list] is a unit that prints every element of 
-con_list that is not the current user id. *)
+    con_list that is not the current user id. *)
 let rec print_contacts st con_list =
   match con_list with
   |[] -> print_string ""
@@ -15,7 +15,7 @@ let rec print_contacts st con_list =
        print_contacts st tl)
 
 (** [output_sender_line text] is a unit that prints the sender's [text] to the 
-terminal in the below format:
+    terminal in the below format:
     "Me: [text]", such that this entire line is right justified and highlighted
     in color. *)
 let output_sender_line text =
@@ -27,7 +27,7 @@ let output_sender_line text =
   print_endline("")
 
 (** [output_receiver_line username text] is a unit that prints the receiver's 
-[text] to the terminal in the below format:
+    [text] to the terminal in the below format:
     "[username]: [text]", such that this entire line is left justified and
     higlighted in color. *)
 let output_receiver_line username text =
@@ -36,7 +36,7 @@ let output_receiver_line username text =
   print_endline("")
 
 (** [print_convo t] is a unit that outputs each text message in t, separating 
-the user name and text body components by color. *)
+    the user name and text body components by color. *)
 let rec print_convo texts st =
   match texts with
   |[]->print_string ""
@@ -54,7 +54,7 @@ let print_login () =
                   "\nWelcome to the login page. What is your username?\n>> ")
 
 (** [print_login_password st] is a unit that prints a message asking for the 
-current user's password. *)
+    current user's password. *)
 let print_login_password st  = 
   ANSITerminal.(print_string [green]
                   ("\nWelcome " ^ get_current_user st ^ "! \
@@ -62,14 +62,14 @@ let print_login_password st  =
                                                          password?\n>> ") )
 
 (** [print_new_username st] is a unit that prints a message asking for a new 
-username. *)
+    username. *)
 let print_new_username st = 
   ANSITerminal.(print_string [blue]
                   "\nPlease enter a new one-word username. \
                    This is how others will see you on the service.\n>> ")
 
 (** [print_new_password st] is a unit that prints a message asking for a new 
-password. *)
+    password. *)
 let print_new_password1 st = 
   ANSITerminal.(print_string [blue]
                   "\nPlease create a one-word password.\n>> ") 
@@ -89,7 +89,7 @@ let print_plaza st =
   ANSITerminal.(print_string [cyan] "\n>> ")
 
 (** [print_connect st] is a unit that prints a message instructing the user
- on how to deal with friend requests. *)
+    on how to deal with friend requests. *)
 let print_connect st =
   let friend_request_num = 
     List.length (get_pending_friends (get_current_user st)) in
@@ -131,7 +131,7 @@ let print_successful_deny str =
   ANSITerminal.(print_string [yellow] "\n\n>> ")
 
 (** [print_whole_chat st] is a unit that prints the conversation between the 
-user and the
+    user and the
     receiver. *)
 let print_whole_chat st=
   print_string "\n";
@@ -142,7 +142,7 @@ let print_whole_chat st=
                   "\n>> ")
 
 (** [print_new_message st] is a unit that prints the most recent
- text message. *)
+    text message. *)
 let print_new_message st=
   (match (get_current_chat st) with
    |[]->print_string ""
@@ -157,16 +157,16 @@ let print_new_message st=
      ANSITerminal.(print_string [white] "\n>> "))
 
 (** [print_exception_message msg] is a unit that prints a formatted exception 
-message that says [msg]. *)
+    message that says [msg]. *)
 let print_exception_message msg = 
   ANSITerminal.(print_string [red] ("\n"^msg)); 
   ANSITerminal.(print_string [red] "\n>> ")
 
 (** [transition st] is a unit that reads line and matches against the resulting
- command given st. If the command is empty, malformed, or invalid, a 
- warning message is printed and transition is run again. 
- Otherwise, transition prints an appropriate message and runs 
- again with the updated state.*)
+    command given st. If the command is empty, malformed, or invalid, a 
+    warning message is printed and transition is run again. 
+    Otherwise, transition prints an appropriate message and runs 
+    again with the updated state.*)
 let rec transition st = 
   try (
     let menu = st |> State.get_current_menu in 
