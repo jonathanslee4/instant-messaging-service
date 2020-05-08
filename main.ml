@@ -129,7 +129,7 @@ let rec transition st =
     | Open_Requests ->
       (match change_state "open_requests" st with 
        | Valid t -> print_connect t; transition t
-       | Invalid -> failwith "should not happen open requests")
+       | Invalid -> failwith "should not happen open requests") 
     | Move_Request (tag,str) -> 
       (match interact_with_request tag str st with
        | PValid t -> print_connect t; transition t
