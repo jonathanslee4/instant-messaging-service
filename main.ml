@@ -79,7 +79,6 @@ let print_new_message st=
    |h::t->output_convo_line h);
   ANSITerminal.(print_string [magenta] "\n>> ")
 
-
 let rec transition st = 
   try (
     let menu = st |> State.get_current_menu in 
@@ -88,6 +87,7 @@ let rec transition st =
     | Sign_Up -> 
       (match change_state "create account" st with 
        | Valid t ->
+         ANSITerminal.erase Screen;
          print_new_username st; transition t
        | Invalid -> failwith "should not get here")
     | New_Username str -> 
@@ -100,7 +100,9 @@ let rec transition st =
     | New_Password str -> 
       (match change_state str st with 
        | Valid t -> ANSITerminal.(print_string [green]
-                                    "Congratulations! You've successfully created an account"); print_login st;transition t 
+                                    "You've successfully created your new account! Welcome!\n"); 
+         ANSITerminal.erase Screen;
+         print_login st;transition t 
        | Invalid -> failwith ("should not get here ")
       )
     | Login_As str -> 
@@ -112,8 +114,10 @@ let rec transition st =
          transition st)
     | Login_Password str ->
       (match change_state str st with
-       | Valid t -> ANSITerminal.(print_string [green]
-                                    "\nThank you for logging in.");print_plaza t; transition t
+       | Valid t -> 
+         ANSITerminal.erase Screen;
+         ANSITerminal.(print_string [green]
+                         "\nYou are now logged in!\n");print_plaza t; transition t
        | Invalid ->  ANSITerminal.(print_string [magenta]
                                      ("\n\nWe don't recognize that password. \n\n>>")); transition st)
     | Chat_With str ->
@@ -126,7 +130,7 @@ let rec transition st =
                              "\nWelcome to the login page. What is your username?\n>> "); *)
          print_whole_chat t; transition t
        | Invalid -> ANSITerminal.(print_string [magenta]
-                                    "\n\nYou don't have a contact with that name. \n");
+                                    "\nYou don't have a contact with that name. Type /connect to add new contacts, or chat with a friend!\n>> ");
          transition st)
     | Send str ->
       (* display most recent chat *)
@@ -156,6 +160,10 @@ let rec transition st =
          ANSITerminal.(print_string [magenta]
                          "\nYou have already added this user. \n>> ");
          transition st
+       | Invalid_Add_Pending-> 
+         ANSITerminal.(print_string [magenta]
+                         "\nYou have already received a friend request from this user! Type accept <name> to accept the request. \n>> ");
+         transition st
        | Invalid_Existless -> 
          ANSITerminal.(print_string [magenta]
                          "\nThis user doesn't exist. \n>> ");
@@ -166,11 +174,14 @@ let rec transition st =
          let next_menu_id = 
            t |> get_current_menu |> get_menu_id in 
          if next_menu_id = "login" then
-           (print_login t; transition t) else
+           (ANSITerminal.erase Screen;
+            (print_login t; transition t)) else
          if next_menu_id = "plaza" then
-           (print_plaza t; transition t) else
+           (ANSITerminal.erase Screen;
+            (print_plaza t; transition t)) else
          if next_menu_id = "sign_up_username" then 
-           (print_new_username t; transition t) else
+           (ANSITerminal.erase Screen;
+            (print_new_username t; transition t)) else
            exit 0
        | Invalid -> failwith "should not happen")
     | Quit -> exit 0 )
@@ -211,7 +222,7 @@ let rec transition st =
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
   ANSITerminal.erase Screen;
-  let state = State.init_state in
+  let state = init_state in
   print_login state;
   transition state 
 

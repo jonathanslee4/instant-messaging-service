@@ -18,7 +18,7 @@ type t = {
   current_receiver : string;
 }
 
-let init_state (*j*) = { (* shouldn't take in a json *)
+let init_state = { 
   current_menu = Login;
   current_chat = [];
   current_contacts = [];
@@ -54,6 +54,7 @@ type result_prime = PValid of t
                   | Invalid_Existless 
                   | Invalid_Add_Already_Added
                   | Invalid_Add_Already_Friended 
+                  | Invalid_Add_Pending
                   | Invalid_Unrecognizable
 
 let change_state input st = 
@@ -86,8 +87,8 @@ let change_state input st =
       Valid {
         current_menu = Plaza; 
         current_chat = st.current_chat; 
-        current_contacts = get_accepted_friends input;
-        current_user = input;
+        current_contacts = get_accepted_friends st.current_user;
+        current_user = st.current_user;
         current_receiver = "";
       }
     else Invalid (* this case in main should be handled by telling user that is the incorrect password and to try again *)
@@ -118,7 +119,7 @@ let change_state input st =
         current_user = st.current_user;
         current_receiver = "";
       } else
-    if (List.mem input (get_accepted_friends input)) then 
+    if (List.mem input (get_accepted_friends st.current_user)) then 
       let filename = 
         st.current_user |> Jmodule.id_creator input |> Jmodule.json_creator in
       (if (Sys.file_exists filename) then
@@ -158,7 +159,7 @@ let change_state input st =
 
 let interact_with_request tag_id input st = 
   let accepted_friends = get_accepted_friends input in 
-  let pending_friends = get_pending_friends input in
+  let pending_friends = get_pending_friends st.current_user in
   let pending_friends_with_tag = "pfp.json" |> Yojson.Basic.from_file |> 
                                  Readingjson.pending_friend_pairs_from_json in
   if tag_id = "add" then 
@@ -166,6 +167,8 @@ let interact_with_request tag_id input st =
     if List.mem input accepted_friends then Invalid_Add_Already_Friended else
     if List.mem ((Jmodule.id_creator st.current_user input)^"&"^
                  st.current_user) pending_friends_with_tag then Invalid_Add_Already_Added else
+    if List.mem ((Jmodule.id_creator st.current_user input)^"&"^
+                 input) pending_friends_with_tag then Invalid_Add_Pending else
       let pfpnum = 
         "pfp.json" |> Yojson.Basic.from_file |> 
         Readingjson.pending_friend_pairs_from_json |> List.length in
@@ -243,7 +246,7 @@ let go_back st =
     Valid {
       current_menu = Plaza; 
       current_chat = [];
-      current_contacts = st.current_contacts;
+      current_contacts = get_accepted_friends st.current_user;
       current_user = st.current_user;
       current_receiver = "";
     } 

@@ -51,21 +51,35 @@ let rec list_to_pair list =
   match list with 
   |[] -> failwith "list must have only two elements"
   | hd :: hd2 :: tl -> (hd, hd2)
-  | _ :: [] -> failwith "list must have only two elements"
+  | _ -> failwith "list must have only two elements"
 
-let rec filter s pairlist = 
+let rec list_to_triple list =
+  match list with 
+  | [] -> failwith "list must have only three elements"
+  | hd :: hd2 :: hd3 :: tl -> (hd,hd2,hd3)
+  | _ -> failwith "list must have only three elements"
+
+let rec filter_pair s pairlist = 
   match pairlist with
   | [] -> []
-  | (a,b) :: tl -> if a = s then b::filter s tl else if b = s then a::filter s tl else filter s tl
+  | (a,b) :: tl -> if a = s then b::filter_pair s tl else if b = s then a::filter_pair s tl else filter_pair s tl
+
+let rec filter_triple s pairlist = 
+  match pairlist with
+  | [] -> []
+  | (a,b,c) :: tl -> 
+    if c = s then filter_triple s tl else
+    if a = s then b::filter_triple s tl else
+    if b = s then a::filter_triple s tl else
+      filter_triple s tl
 
 let get_accepted_friends username =
   let slist = accepted_friend_pairs_from_json (Yojson.Basic.from_file "afp.json") in
-  slist |> expand |> List.map list_to_pair |> filter username
+  slist |> expand |> List.map list_to_pair |> filter_pair username
 
 let get_pending_friends username =
   let slist = pending_friend_pairs_from_json (Yojson.Basic.from_file "pfp.json") in
-  slist |> expand |> List.map list_to_pair |> filter username
-
+  slist |> expand |> List.map list_to_triple |> filter_triple username
 
 (* helper function: takes sent_by and text and displays message*)
 let output_convo_line message=
