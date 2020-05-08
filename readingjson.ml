@@ -26,12 +26,14 @@ let rec make_message_list mess_list json_list=
   |h::t-> make_message_list ((message_from_convo_json h)::mess_list) t
 
 
-(* (* description: takes in json script and pipelines script to string attributes,
-   requires: json is valid json script *)
+(* (* description: takes in json script and pipelines script to string 
+   attributes, requires: json is valid json script *)
    let from_json json (name1:string) (name2:string)=
-   json |> member (Jmodule.id_creator name1 name2) |> to_list |> make_message_list [] *)
+   json |> member (Jmodule.id_creator name1 name2) |> to_list |> 
+   make_message_list [] *)
 let convo_from_json yojsont = 
-  yojsont |> member "text history" |> to_list |> List.map message_from_convo_json
+  yojsont |> member "text history" |> to_list |> 
+  List.map message_from_convo_json
 
 let contacts_from_json yojsont = 
   yojsont |> member "contact list" |> to_list |> List.map to_string 
@@ -62,7 +64,8 @@ let rec list_to_triple list =
 let rec filter_pair s pairlist = 
   match pairlist with
   | [] -> []
-  | (a,b) :: tl -> if a = s then b::filter_pair s tl else if b = s then a::filter_pair s tl else filter_pair s tl
+  | (a,b) :: tl -> if a = s then b::filter_pair s tl else if b = s 
+    then a::filter_pair s tl else filter_pair s tl
 
 let rec filter_triple s pairlist = 
   match pairlist with
@@ -74,9 +77,11 @@ let rec filter_triple s pairlist =
       filter_triple s tl
 
 let get_accepted_friends username =
-  let slist = accepted_friend_pairs_from_json (Yojson.Basic.from_file "afp.json") in
+  let slist = 
+    accepted_friend_pairs_from_json (Yojson.Basic.from_file "afp.json") in
   slist |> expand |> List.map list_to_pair |> filter_pair username
 
 let get_pending_friends username =
-  let slist = pending_friend_pairs_from_json (Yojson.Basic.from_file "pfp.json") in
+  let slist = 
+    pending_friend_pairs_from_json (Yojson.Basic.from_file "pfp.json") in
   slist |> expand |> List.map list_to_triple |> filter_triple username

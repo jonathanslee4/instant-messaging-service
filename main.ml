@@ -3,12 +3,6 @@ open State
 open Readingjson
 open Jmodule
 
-(** [print_slist slist] prints each element of slist. *)
-let rec print_slist slist =
-  match slist with
-  | [] -> print_string ""
-  | hd :: tl -> (print_string hd); print_slist tl
-
 (** [print_contacts st con_list] prints every element of con_list that is not
     the current user id. *)
 let rec print_contacts st con_list =
@@ -20,16 +14,22 @@ let rec print_contacts st con_list =
       (print_endline(hd); 
        print_contacts st tl)
 
-
+(** [output_sender_line text] prints the sender's [text] to the terminal in the 
+    below format:
+    "Me: [text]", such that this entire line is right justified and highlighted
+    in color. *)
 let output_sender_line text =
   let (w,h) = ANSITerminal.size() in
   let length = (String.length text + 4) in
-  (* let current_cursor = ANSITerminal.save_cursor in  *)
   ANSITerminal.move_cursor (w-length) 0;
   ANSITerminal.(print_string [on_blue]("Me: " ^ text));
   print_endline("");
   print_endline("")
 
+(** [output_receiver_line username text] prints the receiver's [text] to the 
+    terminal in the below format:
+    "[username]: [text]", such that this entire line is left justified and
+    higlighted in color. *)
 let output_receiver_line username text =
   ANSITerminal.(print_string [on_magenta] (username ^ ": " ^ text));
   print_endline("");
@@ -43,10 +43,10 @@ let rec print_convo texts st =
   |x::xs-> 
     let sender = get_sent_by x in
     let msg = get_text x in 
-    if(sender = get_current_user st) then (output_sender_line msg; print_convo xs st)
+    if(sender = get_current_user st) then (output_sender_line msg;
+                                           print_convo xs st)
     else 
       (output_receiver_line sender msg; (print_convo xs st))
-
 
 (** [print_login] prints the login menu opening text. *)
 let print_login () =
@@ -136,13 +136,6 @@ let print_whole_chat st=
                   "\n>> ")
 
 (** [print_new_message st] prints the most recent text messa *)
-(* let print_new_message st=
-   print_string "\n";
-   (match (get_current_chat st) with
-   |[]->print_string ""
-   |h::t->output_convo_line h (get_current_user st);
-     ANSITerminal.(print_string [magenta] "\n>> ")) *)
-
 let print_new_message st=
   (match (get_current_chat st) with
    |[]->print_string ""
@@ -165,6 +158,10 @@ let print_exception_message msg =
   ANSITerminal.(print_string [red] ("\n"^msg)); 
   ANSITerminal.(print_string [red] "\n>> ")
 
+(** [transition st] reads line and matches against the resulting command given 
+    st. If the command is empty, malformed, or invalid, a warning message 
+    is printed and transition is run again. Otherwise, transition prints
+     an appropriate message and runs again with the updated state.*)
 let rec transition st = 
   try (
     let menu = st |> State.get_current_menu in 
@@ -336,7 +333,8 @@ let rec transition st =
                              a name.";
     transition st
 
-(** [main ()] prompts for the instant messaging interface to play, then starts it. *)
+(** [main ()] prompts for the instant messaging interface to 
+    play, then starts it. *)
 let main () =
   ANSITerminal.erase Screen;
   ANSITerminal.set_cursor 1 1;

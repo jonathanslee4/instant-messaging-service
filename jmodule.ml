@@ -61,7 +61,9 @@ let existing_convo (sent_by:string) (text:string) (id:string)=
 
 (* what happens when a new file needs to be made *)
 let new_convo (sent_by:string) (text:string) (id:string)=
-  let string_to_print = "{\"text history\": [{\"sent_by\":\""^sent_by^"\", \"text\":\""^text^"\"}]}" in
+  let string_to_print = 
+    "{\"text history\": [{\"sent_by\":\""^sent_by^"\", \"text\":\""^text^"\"}]}"
+  in
   save (json_creator id) (string_to_print)
 
 let editingtext_json (sent_by:string) (text:string) (id:string)=
