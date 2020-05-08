@@ -48,6 +48,11 @@ let get_current_user st =
 
 type result = Valid of t | Invalid
 
+type result_prime = PValid of t 
+                  | Invalid_Existless 
+                  | Invalid_Add_Already_Added
+                  | Invalid_Add_Already_Friended 
+                  | Invalid_Unrecognizable
 
 let change_state input st = 
   match st.current_menu with 
@@ -138,38 +143,49 @@ let change_state input st =
 let interact_with_request tag_id input st = 
   let accepted_friends = get_accepted_friends input in 
   let pending_friends = get_pending_friends input in
-
-  if not(user_exists input) then Invalid else
-  if tag_id = "add" && not(List.mem input accepted_friends) then
-    let pfpnum = "pfp.json" |> Yojson.Basic.from_file |> Readingjson.pending_friend_pairs_from_json |> List.length in
-    if pfpnum = 0 then (Jmodule.pfp_empty (Jmodule.id_creator input st.current_user)) 
-    else
-      (Jmodule.pfp_add (Jmodule.id_creator input st.current_user));
-    Valid {
-      current_menu = Connect;
-      current_chat = st.current_chat;
-      current_contacts = st.current_contacts;
-      current_user = st.current_user;
-      current_receiver = st.current_receiver;
-    } else 
-  if tag_id = "accept" && (List.mem input pending_friends) then
-    (Jmodule.afp_add (Jmodule.id_creator input st.current_user);
-     Valid {
-       current_menu = Connect;
-       current_chat = st.current_chat;
-       current_contacts = st.current_contacts;
-       current_user = st.current_user;
-       current_receiver = st.current_receiver;
-     }) else
-  if tag_id = "deny" && (List.mem input pending_friends) then
-    Valid {
-      current_menu = Connect;
-      current_chat = st.current_chat;
-      current_contacts = st.current_contacts;
-      current_user = st.current_user;
-      current_receiver = st.current_receiver;
-    } 
-  else Invalid
+  let pending_friends_with_tag = "pfp.json" |> Yojson.Basic.from_file |> 
+                                 Readingjson.pending_friend_pairs_from_json in
+  if tag_id = "add" then 
+    if not(user_exists input) then Invalid_Existless else
+    if List.mem input accepted_friends then Invalid_Add_Already_Friended else
+    if List.mem ((Jmodule.id_creator st.current_user input)^"&"^
+                 st.current_user) pending_friends_with_tag then Invalid_Add_Already_Added else
+      let pfpnum = 
+        "pfp.json" |> Yojson.Basic.from_file |> 
+        Readingjson.pending_friend_pairs_from_json |> List.length in
+      if pfpnum = 0 then 
+        (Jmodule.pfp_empty 
+           ((Jmodule.id_creator input st.current_user)^"&"^st.current_user)) 
+      else
+        (Jmodule.pfp_add 
+           ((Jmodule.id_creator input st.current_user)^"&"^st.current_user));
+      PValid {
+        current_menu = Connect;
+        current_chat = st.current_chat;
+        current_contacts = st.current_contacts;
+        current_user = st.current_user;
+        current_receiver = st.current_receiver;
+      } else 
+  if tag_id = "accept" then
+    if not(List.mem input pending_friends) then Invalid_Existless else
+      (Jmodule.afp_add (Jmodule.id_creator input st.current_user);
+       PValid {
+         current_menu = Connect;
+         current_chat = st.current_chat;
+         current_contacts = st.current_contacts;
+         current_user = st.current_user;
+         current_receiver = st.current_receiver;
+       }) else
+  if tag_id = "deny" then
+    if not(List.mem input pending_friends) then Invalid_Existless else
+      PValid {
+        current_menu = Connect;
+        current_chat = st.current_chat;
+        current_contacts = st.current_contacts;
+        current_user = st.current_user;
+        current_receiver = st.current_receiver;
+      } 
+  else Invalid_Unrecognizable
 
 let go_back st = 
   match st.current_menu with 

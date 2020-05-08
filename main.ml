@@ -51,14 +51,19 @@ let print_connect st =
   if friend_request_num = 0 then
     ANSITerminal.(print_string [magenta]
                     "\nYou haven't received any new friend requests yet. Type add followed by a name to send a friend request! When you have received a request, you can type accept or deny followed by that person's name. \n>> ")
+  else if friend_request_num = 1 then
+    (ANSITerminal.(print_string [magenta] "\nYou have a pending friend request from:\n"); 
+     print_contacts st (get_pending_friends (get_current_user st));
+     ANSITerminal.(print_string [magenta] "\n>> "))
   else 
-    (ANSITerminal.(print_string [magenta] "\nYou have new friend request(s)!\n"); 
-     print_contacts st (get_pending_friends (get_current_user st)))
+    (ANSITerminal.(print_string [magenta] "\nYou have pending friend requests from:\n"); 
+     print_contacts st (get_pending_friends (get_current_user st));
+     ANSITerminal.(print_string [magenta] "\n>> "))
 
 
 let print_whole_chat st=
   print_string "\n";
-  ANSITerminal.erase Screen ;
+  ANSITerminal.erase Screen;
   print_convo (List.rev(get_current_chat st));
 
   ANSITerminal.(print_string [magenta] "Type your message or /back to return to your contacts.\n>> ")
@@ -122,13 +127,29 @@ let rec transition st =
          (print_new_message t); transition t
        | Invalid -> failwith "should not happen send")
     | Open_Requests ->
-      (match change_state "open_requests" st with
+      (match change_state "open_requests" st with 
        | Valid t -> print_connect t; transition t
        | Invalid -> failwith "should not happen open requests")
     | Move_Request (tag,str) -> 
       (match interact_with_request tag str st with
-       | Valid t -> print_connect t; transition t
-       | Invalid -> failwith "invalid")
+       | PValid t -> print_connect t; transition t
+       | Invalid_Unrecognizable -> 
+         ANSITerminal.(print_string [magenta]
+                         "\nYou must type add, accept, or 
+                         deny followed by a name.\n>> ");
+         transition st
+       | Invalid_Add_Already_Friended -> 
+         ANSITerminal.(print_string [magenta]
+                         "\nYou are already friends with this user. \n>> ");
+         transition st
+       | Invalid_Add_Already_Added -> 
+         ANSITerminal.(print_string [magenta]
+                         "\nYou have already added this user. \n>> ");
+         transition st
+       | Invalid_Existless -> 
+         ANSITerminal.(print_string [magenta]
+                         "\nThis user doesn't exist. \n>> ");
+         transition st)
     | Back ->
       (match go_back st with
        | Valid t -> 
@@ -170,10 +191,11 @@ let rec transition st =
                                                "Your username can only be one word, no spaces"); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st 
   | Malformed_New_Password ->  ANSITerminal.(print_string [red] 
                                                "Your password can only be one word no spaces"); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st 
-  | Malformed_Connect -> ANSITerminal.(print_string [red] "You must type add, accept, or deny followed by a name."); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st
+  | Malformed_Connect -> ANSITerminal.(print_string [red] "\nYou must type add, accept, or deny followed by a name."); ANSITerminal.(print_string [magenta] "\n>> ");transition st
 
 (** [main ()] prompts for the game to play, then starts it. *)
 let main () =
+  ANSITerminal.erase Screen;
   let state = State.init_state in
   print_login state;
   transition state 
