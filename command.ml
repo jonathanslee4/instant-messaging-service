@@ -1,4 +1,3 @@
-
 type phrase = string
 
 type command = 
@@ -6,6 +5,7 @@ type command =
   | New_Username of phrase
   | New_Password of phrase
   | Login_As of phrase
+  | Login_Password of phrase
   | Chat_With of phrase
   | Send of phrase
   | Open_Requests
@@ -14,6 +14,7 @@ type command =
   | Quit
 
 exception Empty_Login_Id
+exception Empty_Login_Password
 exception Empty_Chat_With_Id
 exception Empty_Send
 exception Empty_New_Username
@@ -21,6 +22,7 @@ exception Empty_New_Password
 exception Empty_Connect
 
 exception Malformed_Login_Id
+exception Malformed_Login_Password
 exception Malformed_Chat_With
 exception Malformed_Chat_With_Self
 exception Malformed_New_Username
@@ -41,6 +43,7 @@ let striplist str =
   if str = "" then [] else
     str |> String.split_on_char ' ' |> remove_empty
 
+(** TODO jonny document this *)
 let get_string strlist=
   match strlist with
   | [] -> failwith "string list must have 2 elements"
@@ -51,6 +54,7 @@ let parse current_menu_id current_user_id str =
   match strlist with
   | [] -> (if current_menu_id = "login" then raise Empty_Login_Id else
            if current_menu_id = "plaza" then raise Empty_Chat_With_Id else
+           if current_menu_id = "login_password_verification" then raise Empty_Login_Password else
            if current_menu_id = "sign_up_username" then raise Empty_New_Username else
            if current_menu_id = "sign_up_password" then raise Empty_New_Password else
            if current_menu_id = "connect" then raise Empty_Connect else 
@@ -62,6 +66,10 @@ let parse current_menu_id current_user_id str =
       (if List.length strlist <> 1  then raise Malformed_Login_Id else
        if hd = "/signup" then Sign_Up else
          Login_As hd) else
+    if current_menu_id = "password_verification" then 
+      (if List.length strlist <> 1 then raise Malformed_Login_Password else
+         Login_Password hd
+      ) else
     if current_menu_id = "sign_up_username" then 
       (if List.length strlist <> 1 then raise Malformed_New_Username else
          New_Username hd) else 

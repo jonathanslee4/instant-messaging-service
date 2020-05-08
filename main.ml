@@ -29,6 +29,10 @@ let print_login st =
   ANSITerminal.(print_string [green]
                   "\nWelcome to the login page. What is your username?\n>> ")
 
+let print_login_password st  = 
+  ANSITerminal.(print_string [green]
+                  ("\nWelcome " ^ get_current_user st ^ "! What is your password?\n>> ") )
+
 let print_new_username st = 
   ANSITerminal.(print_string [blue]
                   "\nPlease enter a new one-word username. This is how others will see you on the service.\n>> ")
@@ -97,10 +101,16 @@ let rec transition st =
     | Login_As str -> 
       (match change_state str st with
        | Valid t -> 
-         print_plaza t; transition t
+         print_login_password t; transition t
        | Invalid -> ANSITerminal.(print_string [magenta]
                                     ("\n\nThat username doesn't exist. Type " ^ "/signup " ^ "to create a new account. \n\n>>"));
          transition st)
+    | Login_Password str ->
+      (match change_state str st with
+       | Valid t -> ANSITerminal.(print_string [green]
+                                    "\nThank you for logging in.");print_plaza t; transition t
+       | Invalid ->  ANSITerminal.(print_string [magenta]
+                                     ("\n\nWe don't recognize that password. \n\n>>")); transition st)
     | Chat_With str ->
       (* display contents of previous chat, reverse list *)
       (match change_state str st with
@@ -148,6 +158,9 @@ let rec transition st =
                                       "Whoops! You didn't enter anything. Enter a valid username to login!"); 
     ANSITerminal.(print_string [magenta] "\n\n>> ");
     transition st
+  | Empty_Login_Password -> ANSITerminal.(print_string [red] 
+                                            "You entered a blank password! Try again"); 
+    ANSITerminal.(print_string [magenta] "\n\n>> "); transition st 
   | Empty_Chat_With_Id -> ANSITerminal.(print_string [red] "Whoops! You can't chat someone with no name!!" );
     ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
   | Empty_Send -> ANSITerminal.(print_string [red] 
@@ -162,6 +175,8 @@ let rec transition st =
   | Empty_Connect ->  ANSITerminal.(print_string [red] "You must type add, accept, or deny followed by a name."); ANSITerminal.(print_string [magenta] "\n\n>> ");transition st
   | Malformed_Login_Id -> ANSITerminal.(print_string [red]
                                           "Uh oh that username doesn't exist. "); ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
+  | Malformed_Login_Password -> ANSITerminal.(print_string [red]
+                                                "Passwords should only have one space, so that can't be it."); ANSITerminal.(print_string [magenta] "\n\n>> "); transition st
   | Malformed_Chat_With -> ANSITerminal.(print_string [red]
                                            "Uh oh that person doesn't exist. Try one of your existing contacts!"); ANSITerminal.(print_string [magenta] "\n\n>>"); transition st
   | Malformed_Chat_With_Self -> ANSITerminal.(print_string [red]

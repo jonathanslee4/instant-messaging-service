@@ -3,6 +3,7 @@ open Readingaccounts
 
 type menu = 
   | Login
+  | LoginVerify
   | SignUpUsername
   | SignUpPassword
   | Plaza
@@ -31,6 +32,7 @@ let get_current_menu st =
 let get_menu_id menu =
   match menu with
   | Login -> "login"
+  | LoginVerify -> "password_verification"
   | SignUpUsername -> "sign_up_username"
   | SignUpPassword -> "sign_up_password"
   | Plaza -> "plaza"
@@ -54,9 +56,9 @@ let change_state input st =
   | Login -> 
     if (user_exists input) then 
       Valid { 
-        current_menu = Plaza; 
+        current_menu = LoginVerify; 
         current_chat = st.current_chat; 
-        current_contacts = get_accepted_friends input;
+        current_contacts = st.current_contacts;
         current_user = input;
         current_receiver = "";
       }
@@ -70,6 +72,20 @@ let change_state input st =
       }
     else 
       Invalid (** this case in main should be handled by prompting user to type/signup*)
+  | LoginVerify-> 
+    if "logindetails.json" 
+       |> Yojson.Basic.from_file 
+       |> accounts_from_json 
+       |> (is_verified_password st.current_user input) 
+    then 
+      Valid {
+        current_menu = Plaza; 
+        current_chat = st.current_chat; 
+        current_contacts = get_accepted_friends input;
+        current_user = input;
+        current_receiver = "";
+      }
+    else Invalid (* this case in main should be handled by telling user that is the incorrect password and to try again *)
   | SignUpUsername ->
     if (not(user_exists input)) then 
       Valid {
@@ -182,6 +198,15 @@ let go_back st =
       current_user = "";
       current_receiver = "";
     }
+  | LoginVerify -> 
+    Valid {
+      current_menu = Login; 
+      current_chat = [];
+      current_contacts = st.current_contacts;
+      current_user = "";
+      current_receiver = "";
+    }
+
   | SignUpPassword -> 
     Valid {
       current_menu = SignUpUsername; 
