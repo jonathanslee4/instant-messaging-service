@@ -61,10 +61,10 @@ let print_new_password2 st =
 (** [print_plaza st] prints a message asking who the user 
     would like to chat with, along with the user's friends. *)
 let print_plaza st =                      
-  ANSITerminal.(print_string [magenta] "\nWho would you like to chat with? \
-                                        Type /back to log out.\n");
+  ANSITerminal.(print_string [cyan] "\nWho would you like to chat with? \
+                                     Type /back to log out.\n");
   print_contacts st ((get_current_contacts st));
-  ANSITerminal.(print_string [magenta] "\n>> ")
+  ANSITerminal.(print_string [cyan] "\n>> ")
 
 (** [print_connect st] prints a message instructing the user on how to deal with
     friend requests. *)
@@ -90,12 +90,19 @@ let print_connect st =
      ANSITerminal.(print_string [yellow] "\n>> "))
 
 let print_successful_add str = 
-  ANSITerminal.(print_string [green] (str^"has been sent a friend request."))
+  ANSITerminal.(print_string [yellow] ("\n"^str^" has been sent a friend \
+                                                 request. We'll let you know \
+                                                 as soon as she accepts!\n>> "))
 
 let print_successful_accept str = 
-  ANSITerminal.(print_string [green] ("You're now friends with "^str^"! If you 
-  want to start a new conversation with "^str^", type /back to view \
-                                               your contacts."))
+  ANSITerminal.(print_string [green]
+                  ("\nYou're now friends with "^str^"! If you want to start a \
+                                                     new conversation with \
+                                                    "^str^", type /back \
+                                                           to view your \
+                                                           contacts."));
+  ANSITerminal.(print_string [yellow] "\n\n>> ")
+
 
 
 (** [print_whole_chat st] prints the conversation between the user and the
@@ -118,8 +125,8 @@ let print_new_message st=
 (** [print_exception_message msg] prints a formatted exception message that 
     says [msg]. *)
 let print_exception_message msg = 
-  ANSITerminal.(print_string [red] msg); 
-  ANSITerminal.(print_string [magenta] "\n\n>> ")
+  ANSITerminal.(print_string [red] ("\n"^msg)); 
+  ANSITerminal.(print_string [red] "\n>> ")
 
 let rec transition st = 
   try (
@@ -155,10 +162,10 @@ let rec transition st =
        | Valid t -> 
          print_login_password t; transition t
        | Invalid -> ANSITerminal.(print_string [magenta]
-                                    ("\n\nThat username doesn't exist. \
+                                    ("\nThat username doesn't exist. \
                                       Type " ^ "/signup " ^ "to \
                                                              create a new \
-                                                             account. \n\n>>"));
+                                                             account. \n>> "));
          transition st)
     | Login_Password str ->
       (match change_state str st with
@@ -167,9 +174,9 @@ let rec transition st =
          ANSITerminal.(print_string [green]
                          "\nYou are now logged in!\n");print_plaza t; 
          transition t
-       | Invalid ->  ANSITerminal.(print_string [magenta]
-                                     ("\n\nWe don't recognize that password. \
-                                       \n\n>>")); transition st)
+       | Invalid ->  ANSITerminal.(print_string [red]
+                                     ("\nIncorrect password. \
+                                       \n>> ")); transition st)
     | Chat_With str ->
       (* display contents of previous chat, reverse list *)
       (match change_state str st with
@@ -263,7 +270,7 @@ let rec transition st =
                               name.";
     transition st
   | Malformed_Login_Id -> 
-    print_exception_message "Uh oh that username doesn't exist.";
+    print_exception_message "That username doesn't exist.";
     transition st
   | Malformed_Login_Password -> 
     print_exception_message "Passwords should only have one space, so that \
@@ -290,6 +297,7 @@ let rec transition st =
 (** [main ()] prompts for the instant messaging interface to play, then starts it. *)
 let main () =
   ANSITerminal.erase Screen;
+  ANSITerminal.set_cursor 1 1;
   let state = init_state in
   print_login ();
   transition state 
