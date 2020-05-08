@@ -3,8 +3,8 @@ open State
 open Readingjson
 open Jmodule
 
-(** [print_contacts st con_list] prints every element of con_list that is not
-    the current user id. *)
+(** [print_contacts st con_list] is a unit that prints every element of 
+con_list that is not the current user id. *)
 let rec print_contacts st con_list =
   match con_list with
   |[] -> print_string ""
@@ -14,8 +14,8 @@ let rec print_contacts st con_list =
       (print_endline(hd); 
        print_contacts st tl)
 
-(** [output_sender_line text] prints the sender's [text] to the terminal in the 
-    below format:
+(** [output_sender_line text] is a unit that prints the sender's [text] to the 
+terminal in the below format:
     "Me: [text]", such that this entire line is right justified and highlighted
     in color. *)
 let output_sender_line text =
@@ -26,8 +26,8 @@ let output_sender_line text =
   print_endline("");
   print_endline("")
 
-(** [output_receiver_line username text] prints the receiver's [text] to the 
-    terminal in the below format:
+(** [output_receiver_line username text] is a unit that prints the receiver's 
+[text] to the terminal in the below format:
     "[username]: [text]", such that this entire line is left justified and
     higlighted in color. *)
 let output_receiver_line username text =
@@ -35,8 +35,8 @@ let output_receiver_line username text =
   print_endline("");
   print_endline("")
 
-(** [print_convo t] outputs each text message in t, separating the user name and
-    text body components by color. *)
+(** [print_convo t] is a unit that outputs each text message in t, separating 
+the user name and text body components by color. *)
 let rec print_convo texts st =
   match texts with
   |[]->print_string ""
@@ -48,37 +48,39 @@ let rec print_convo texts st =
     else 
       (output_receiver_line sender msg; (print_convo xs st))
 
-(** [print_login] prints the login menu opening text. *)
+(** [print_login] is a unit that prints the login menu opening text. *)
 let print_login () =
   ANSITerminal.(print_string [green]
                   "\nWelcome to the login page. What is your username?\n>> ")
 
-(** [print_login_password st] prints a message asking for the current user's
-    password. *)
+(** [print_login_password st] is a unit that prints a message asking for the 
+current user's password. *)
 let print_login_password st  = 
   ANSITerminal.(print_string [green]
                   ("\nWelcome " ^ get_current_user st ^ "! \
                                                          What is your \
                                                          password?\n>> ") )
 
-(** [print_new_username st] prints a message asking for a new username. *)
+(** [print_new_username st] is a unit that prints a message asking for a new 
+username. *)
 let print_new_username st = 
   ANSITerminal.(print_string [blue]
                   "\nPlease enter a new one-word username. \
                    This is how others will see you on the service.\n>> ")
 
-(** [print_new_password st] prints a message asking for a new password. *)
+(** [print_new_password st] is a unit that prints a message asking for a new 
+password. *)
 let print_new_password1 st = 
   ANSITerminal.(print_string [blue]
                   "\nPlease create a one-word password.\n>> ") 
 
-(** [print_new_password2 st] prints a message asking for a password 
+(** [print_new_password2 st] is a unit prints a message asking for a password 
     confirmation. *)
 let print_new_password2 st = 
   ANSITerminal.(print_string [blue]
                   "\nPlease enter the password again to confirm.\n>> ")
 
-(** [print_plaza st] prints a message asking who the user 
+(** [print_plaza st] is a unit that prints a message asking who the user 
     would like to chat with, along with the user's friends. *)
 let print_plaza st =                      
   ANSITerminal.(print_string [cyan] "\nWho would you like to chat with? \
@@ -86,8 +88,8 @@ let print_plaza st =
   print_contacts st ((get_current_contacts st));
   ANSITerminal.(print_string [cyan] "\n>> ")
 
-(** [print_connect st] prints a message instructing the user on how to deal with
-    friend requests. *)
+(** [print_connect st] is a unit that prints a message instructing the user
+ on how to deal with friend requests. *)
 let print_connect st =
   let friend_request_num = 
     List.length (get_pending_friends (get_current_user st)) in
@@ -128,7 +130,8 @@ let print_successful_deny str =
                   ("\nYou denied "^str^"'s friend request."));
   ANSITerminal.(print_string [yellow] "\n\n>> ")
 
-(** [print_whole_chat st] prints the conversation between the user and the
+(** [print_whole_chat st] is a unit that prints the conversation between the 
+user and the
     receiver. *)
 let print_whole_chat st=
   print_string "\n";
@@ -138,7 +141,8 @@ let print_whole_chat st=
   ANSITerminal.(print_string [white] 
                   "\n>> ")
 
-(** [print_new_message st] prints the most recent text messa *)
+(** [print_new_message st] is a unit that prints the most recent
+ text message. *)
 let print_new_message st=
   (match (get_current_chat st) with
    |[]->print_string ""
@@ -152,16 +156,17 @@ let print_new_message st=
      output_sender_line msg; 
      ANSITerminal.(print_string [white] "\n>> "))
 
-(** [print_exception_message msg] prints a formatted exception message that 
-    says [msg]. *)
+(** [print_exception_message msg] is a unit that prints a formatted exception 
+message that says [msg]. *)
 let print_exception_message msg = 
   ANSITerminal.(print_string [red] ("\n"^msg)); 
   ANSITerminal.(print_string [red] "\n>> ")
 
-(** [transition st] reads line and matches against the resulting command given 
-    st. If the command is empty, malformed, or invalid, a warning message 
-    is printed and transition is run again. Otherwise, transition prints
-     an appropriate message and runs again with the updated state.*)
+(** [transition st] is a unit that reads line and matches against the resulting
+ command given st. If the command is empty, malformed, or invalid, a 
+ warning message is printed and transition is run again. 
+ Otherwise, transition prints an appropriate message and runs 
+ again with the updated state.*)
 let rec transition st = 
   try (
     let menu = st |> State.get_current_menu in 
@@ -334,7 +339,7 @@ let rec transition st =
                              a name.";
     transition st
 
-(** [main ()] prompts for the instant messaging interface to 
+(** [main ()] is a unit that prompts for the instant messaging interface to 
     play, then starts it. *)
 let main () =
   ANSITerminal.erase Screen;
