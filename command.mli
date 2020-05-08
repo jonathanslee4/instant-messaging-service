@@ -20,7 +20,8 @@ type command =
 (** Raised when an empty command is parsed when a user is in the Login menu. *)
 exception Empty_Login_Id
 
-(** Raised when an empty command is parsed when a user is in the LoginVerify menu. *)
+(** Raised when an empty command is parsed when a user is in the LoginVerify 
+    menu. *)
 exception Empty_Login_Password
 
 (** Raised when an empty command is parsed when a user is in the Plaza menu. *)

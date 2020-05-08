@@ -46,9 +46,12 @@ let parse current_menu_id current_user_id str =
   match strlist with
   | [] -> (if current_menu_id = "login" then raise Empty_Login_Id else
            if current_menu_id = "plaza" then raise Empty_Chat_With_Id else
-           if current_menu_id = "login_password_verification" then raise Empty_Login_Password else
-           if current_menu_id = "sign_up_username" then raise Empty_New_Username else
-           if current_menu_id = "sign_up_password" then raise Empty_New_Password else
+           if current_menu_id = "login_password_verification" then 
+             raise Empty_Login_Password else
+           if current_menu_id = "sign_up_username" then 
+             raise Empty_New_Username else
+           if current_menu_id = "sign_up_password" then 
+             raise Empty_New_Password else
            if current_menu_id = "connect" then raise Empty_Connect else 
              raise Empty_Send)
   | hd :: tl -> 
