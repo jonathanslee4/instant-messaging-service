@@ -92,16 +92,15 @@ let replace input output =
   Str.global_replace (Str.regexp_string input) output
 
 let pfp_remove (to_remove:string)=
-  let pfp_contents = entire_file "pfp.json" in
+  (* let pfp_contents = entire_file "pfp.json" in
   let removed1 = replace to_remove "" pfp_contents in
   let removed2 = replace "\"\"," "" removed1 in
-  save ("pfp.json") removed2
-
-(* let pfp_contents = entire_file "pfp.json" in
-   let removed1 = replace to_remove "" pfp_contents in 
-   if String.contains pfp_contents ','
-   then save ("pfp.json") (replace "\"\"," "" removed1)
-   else save ("pfp.jsop") (replace "\"\"" "" removed1) *)
+  save ("pfp.json") removed2 *)
+  let pfp_contents = entire_file "pfp.json" in
+  let removed1 = replace to_remove "" pfp_contents in 
+  if (String.contains pfp_contents ',')
+  then (save ("pfp.json") (replace "\"\"," "" removed1))
+  else (save ("pfp.json") (replace "\"\"" "" removed1))
 
 (* THE ACCOUNT JSON EDITING IS BELOW *)
 
