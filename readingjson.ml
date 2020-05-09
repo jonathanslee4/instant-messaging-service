@@ -18,6 +18,10 @@ let get_sent_by msg = msg.sent_by
 
 let get_text msg = msg.text
 
+let get_username act = act.username
+
+let get_password act = act.password
+
 (** [message_from_convo_json j] is a unit that parses data from [j] to type 
     message. *) 
 let message_from_convo_json j ={
@@ -28,8 +32,6 @@ let convo_from_json yojsont =
   yojsont |> member "text history" |> to_list |> 
   List.map message_from_convo_json
 
-(** [accepted_friend_pairs_from_json yojsont] is a list of accepted friend pairs
-    from [yojsont]. *) 
 let accepted_friend_pairs_from_json yojsont = 
   yojsont |> member "accepted friend pairs" |> to_list |> List.map to_string
 
@@ -37,11 +39,11 @@ let pending_friend_pairs_from_json yojsont =
   yojsont |> member "pending friend pairs" |> to_list |> List.map to_string
 
 (** [expand slist] is a list of string lists, each of which 
-    is formed by concatenating the elements of slist with the '_' character.*) 
+    is formed by concatenating the elements of slist with the '&' character.*) 
 let rec expand slist = 
   match slist with
   | [] -> []
-  | hd::tl -> String.split_on_char '_' hd :: expand tl
+  | hd::tl -> String.split_on_char '&' hd :: expand tl
 
 (** [list_to_pair list] is a tuple representing the inputted two-element list. *) 
 let rec list_to_pair list =

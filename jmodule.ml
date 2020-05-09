@@ -10,8 +10,8 @@ let rec contains list item =
   |h::t-> if h=item then true else contains t item
 
 let id_creator (name1:string) (name2:string)=
-  if name1<name2 then name1^"_"^name2
-  else name2^"_"^name1
+  if name1<name2 then name1^"&"^name2
+  else name2^"&"^name1
 
 let json_creator (id:string)=
   id^".json"
@@ -65,6 +65,12 @@ let afp_add (new_contact:string) =
   let second = ",\""^new_contact^"\"" in
   save ("afp.json") (first^second^third);;
 
+let afp_empty (new_contact:string)=
+  let contacts_contents = entire_file "afp.json" in
+  let last_square = String.rindex contacts_contents ']' in
+  let first = Str.string_before contacts_contents (last_square) in
+  let third = Str.string_after contacts_contents (last_square) in
+  save ("afp.json") (first^"\""^new_contact^"\""^third)
 
 let pfp_add (new_contact:string) =
   let contacts_contents = entire_file "pfp.json" in
@@ -91,6 +97,12 @@ let pfp_remove (to_remove:string)=
   let removed2 = replace "\"\"," "" removed1 in
   save ("pfp.json") removed2
 
+(* let pfp_contents = entire_file "pfp.json" in
+   let removed1 = replace to_remove "" pfp_contents in 
+   if String.contains pfp_contents ','
+   then save ("pfp.json") (replace "\"\"," "" removed1)
+   else save ("pfp.jsop") (replace "\"\"" "" removed1) *)
+
 (* THE ACCOUNT JSON EDITING IS BELOW *)
 
 let account_json_add username password=
@@ -103,9 +115,3 @@ let account_json_add username password=
   save ("logindetails.json") (first^second^third)
 
 
-(* TO BE USED IN STATE *)
-(* user account verification -> check if u_exists=false && 
-                                      let acc_veri t (username:string) pass1 pass2=
-                                        if ((pass1=pass2) && not (user_exists username t))
-                                        then (account_json_add username pass1)
-                                        else failwith "ask to enter passwords again" *)
