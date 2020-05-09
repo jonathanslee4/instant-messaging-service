@@ -1,9 +1,12 @@
 (** 
     Representation of dynamic instant messaging state.
 
-    This module represents the state of the instant messaging system as it is
+    This module's type t represents the state of the instant messaging system as it is
     being used, including the user's username, current menu, conversation 
-    history/details, and contacts.
+    history/details, and contacts. 
+    Furthermore, functions such as [change_state] and [interact_with_request]
+    are responsible for returning a new state wrapped in the result type
+    as well as for changing the contents of relevant json files. 
 *)
 
 (** The abstract type of values representing the program state. *)
