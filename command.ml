@@ -10,6 +10,7 @@ type command =
   | Move_Request of string * string
   | Back
   | Quit
+  | Current
 
 exception Empty_Login_Id
 exception Empty_Login_Password
@@ -41,6 +42,20 @@ let striplist str =
   if str = "" then [] else
     str |> String.split_on_char ' ' |> remove_empty
 
+(** [print_help] is a unit that prints commands used to help user
+navigate system.*)
+(* DELETE HERE IF MESSED UP *)
+let print_help() =
+  ANSITerminal.(print_string [white]
+                  "\nHere's some helpful tips for running our system:\n");
+  ANSITerminal.(print_string [magenta]
+                  "To quit or leave:\n/quit\n/back
+                  \nTo create a new account:\n/signup\n
+                  To see friend requests:\n/connect\n
+                  To interact with friend requests:\nadd (friend's name)
+                  \naccept (friend's name)
+                  \ndeny (friend's name)")
+
 let parse current_menu_id current_user_id str =
   let strlist = striplist str in
   match strlist with
@@ -55,6 +70,8 @@ let parse current_menu_id current_user_id str =
            if current_menu_id = "connect" then raise Empty_Connect else 
              raise Empty_Send)
   | hd :: tl -> 
+    (* delete here if messed up *)
+    if hd = "/help" then Current else
     if hd = "/quit" then Quit else
     if hd = "/back" then Back else
     if current_menu_id = "login" then 

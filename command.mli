@@ -16,6 +16,7 @@ type command =
   | Move_Request of string * string
   | Back
   | Quit
+  | Current
 
 (** Raised when an empty command is parsed when a user is in the Login menu. *)
 exception Empty_Login_Id

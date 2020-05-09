@@ -48,6 +48,22 @@ let rec print_convo texts st =
     else 
       (output_receiver_line sender msg; (print_convo xs st))
 
+(** [print_help] is a unit that prints commands used to help user
+navigate system.*)
+let print_help() =
+  ANSITerminal.(print_string [white]
+                  "\nHere's some helpful tips for running our system:\n");
+  ANSITerminal.(print_string [magenta]
+                  "To quit or leave:\n/quit\n/back");
+  ANSITerminal.(print_string [magenta]
+                  "\nTo create a new account:\n/signup");
+  ANSITerminal.(print_string [magenta]
+                  "\nTo see friend requests:\n/connect");
+  ANSITerminal.(print_string [magenta]
+                  "\nTo interact with friend requests:\nadd (friend's name)\naccept (friend's name)\ndeny (friend's name)\n\n");
+  ANSITerminal.(print_string [green]
+                  ">> ")
+
 (** [print_login] is a unit that prints the login menu opening text. *)
 let print_login () =
   ANSITerminal.(print_string [green]
@@ -173,6 +189,7 @@ let rec transition st =
     let command = (Command.parse (State.get_menu_id menu)
                      (get_current_user st) (read_line ())) in
     match command with
+    | Current -> (print_help(); transition st)
     | Sign_Up -> 
       (match change_state "create account" st with 
        | Valid t ->
