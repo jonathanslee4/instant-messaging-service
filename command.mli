@@ -1,5 +1,6 @@
 (**
-   COMMAND MODULE: Parsing of player commands.
+   Parses the user's input into the correct command. 
+
 *)
 
 (** The type [command] represents a player input which depends on the current
@@ -42,44 +43,50 @@ exception Empty_New_Password
 (** Raised when empty command is parsed in the Connect menu. *)
 exception Empty_Connect
 
-(** Raised when a malformed command is encountered in the Login menu. *)
+(** Raised when an input with more than one word is encountered in the 
+    Login_As menu. *)
 exception Malformed_Login_Id
 
-(** Raised when a malformed command is encountered in the LoginVerify menu. 
-    AKA the input for the password had a space. *)
+(** Raised when an input with more than one word is encountered in the 
+    Login_Password menu. *)
 exception Malformed_Login_Password
 
-(** Raised when a malformed command is encountered in the Plaza menu. *)
+(** Raised when an input with more than one word is encountered in the 
+    Plaza menu. *)
 exception Malformed_Chat_With
 
 (** Raised when a malformed command is encountered in the Plaza menu. 
     Handles the specific case where you chat yourself. *)
 exception Malformed_Chat_With_Self
 
-(** Raised when a malformed command is encountered in the SignUpUsername menu.*)
+(** Raised when an input with more than one word is encountered 
+    in the New_Username menu.*)
 exception Malformed_New_Username
 
-(** Raised when a malformed command is encountered in the SignUpPassword menu.*)
+(** Raised when an input with more than one word is encountered in the 
+    New_Password menu. *)
 exception Malformed_New_Password
 
-(** Raised when a malformed command is encountered in the Connect menu. *)
+(** Raised when an input with more than two words is encountered in the 
+    Connect menu. *)
 exception Malformed_Connect
 
-(** [parse str] parses a player's input into a [command], as follows. 
+(** [parse menuid userid str] parses a player's input [str] into a [command]
+    given [menuid] and [userid] as follows. 
     Examples: 
     - [parse "how have you been?"] within the Chat menu is 
       [Send "how have you been?"].
     - [parse "Jessica"] within the Plaza menu is [Chat_With "Jessica"]. 
     - [parse "/back"] is [Back]. 
 
-    Requires: [str] contains only alphanumeric (A-Z, a-z, 0-9) and space 
-    characters (only ASCII character code 32; not tabs or newlines, etc.).
+    Requires: [str] contains only letters, numbers, and space 
+    characters.
 
     Raises: [Empty] if [str] is the empty string or contains only spaces. 
 
     Raises: [Malformed_<spec>] if the command is 
     malformed, where [spec] depends on the specific menu/case that caused the 
-    malformed command to occur. A command is {malformed} if the phrase is more
-    than one word in Login, LoginVerify, Plaza, SignUpUsername, SignUpPassword,
-    or Connect. *)
+    malformed command to occur. A command is malformed if the phrase is more
+    than one word in Login, LoginVerify, Plaza, SignUpUsername, or SignUpPassword,
+    or more than two words in Connect. *)
 val parse : string -> string -> string -> command

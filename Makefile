@@ -1,5 +1,5 @@
 # 
-MODULES=jmodule readingjson state command main readingaccounts
+MODULES=jmodule readingjson state command main
 
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)

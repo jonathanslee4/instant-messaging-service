@@ -1,3 +1,10 @@
+(**  
+    Handles reading/retrieving information from different types of 
+    json files used in the instant messaging system, including jsons 
+    representing registered users, accepted friend requests, pending friend
+    requests, and conversations. 
+
+*)
 
 (** The type representing a message from a user. *)
 type message 

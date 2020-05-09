@@ -43,7 +43,7 @@ let striplist str =
     str |> String.split_on_char ' ' |> remove_empty
 
 (** [print_help] is a unit that prints commands used to help user
-navigate system.*)
+    navigate system.*)
 (* DELETE HERE IF MESSED UP *)
 let print_help() =
   ANSITerminal.(print_string [white]
@@ -61,7 +61,7 @@ let parse current_menu_id current_user_id str =
   match strlist with
   | [] -> (if current_menu_id = "login" then raise Empty_Login_Id else
            if current_menu_id = "plaza" then raise Empty_Chat_With_Id else
-           if current_menu_id = "login_password_verification" then 
+           if current_menu_id = "password_verification" then 
              raise Empty_Login_Password else
            if current_menu_id = "sign_up_username" then 
              raise Empty_New_Username else

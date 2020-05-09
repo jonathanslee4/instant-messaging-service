@@ -1,3 +1,12 @@
+(** 
+    Handles the modification of json files necessary for maintaining changes
+    in state. 
+
+    This module includes functionality for writing and removing information 
+    from pre-existing jsonss, saving json files, and creating new json files. 
+
+*)
+
 
 (**[id_creator name1 name 2] is a string that consists of the alphabetical 
    concatenating of [name1] and [name2]. *)

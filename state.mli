@@ -1,12 +1,10 @@
-(*
-   Representation of dynamic instant messaging state.
+(** 
+    Representation of dynamic instant messaging state.
 
-   This module represents the state of the instant messaging system as it is
-   being used, including the user's username, current menu, 
-   conversation history/details, and contacts.
+    This module represents the state of the instant messaging system as it is
+    being used, including the user's username, current menu, conversation 
+    history/details, and contacts.
 *)
-
-(********************************************************************** *)
 
 (** The abstract type of values representing the program state. *)
 type t 
