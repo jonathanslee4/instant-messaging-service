@@ -1,5 +1,5 @@
-open Readingjson
-open Jmodule
+open Read
+open Write
 
 type menu = 
   | Login

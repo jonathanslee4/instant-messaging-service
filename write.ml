@@ -93,9 +93,9 @@ let replace input output =
 
 let pfp_remove (to_remove:string)=
   (* let pfp_contents = entire_file "pfp.json" in
-  let removed1 = replace to_remove "" pfp_contents in
-  let removed2 = replace "\"\"," "" removed1 in
-  save ("pfp.json") removed2 *)
+     let removed1 = replace to_remove "" pfp_contents in
+     let removed2 = replace "\"\"," "" removed1 in
+     save ("pfp.json") removed2 *)
   let pfp_contents = entire_file "pfp.json" in
   let removed1 = replace to_remove "" pfp_contents in 
   if (String.contains pfp_contents ',')

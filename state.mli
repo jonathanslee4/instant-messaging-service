@@ -1,12 +1,12 @@
 (** 
     Representation of dynamic instant messaging state.
 
-    This module's type t represents the state of the instant messaging system as it is
-    being used, including the user's username, current menu, conversation 
-    history/details, and contacts. 
+    This module's type t represents the state of the instant messaging system 
+    as it is being used, including the user's username, current menu, 
+    conversation history/details, and contacts. 
     Furthermore, functions such as [change_state] and [interact_with_request]
-    are responsible for returning a new state wrapped in the result type
-    as well as for changing the contents of relevant json files. 
+    are responsible for returning a new state wrapped in the result type which
+    means that corresponding json files are updated as well. 
 *)
 
 (** The abstract type of values representing the program state. *)
@@ -47,7 +47,7 @@ val get_current_contacts : t -> string list
 
 (** [get_current_chat st] is message list representing the conversation history 
     between the user and the person the user has chosen to chat with in [st]. *)
-val get_current_chat : t -> Readingjson.message list
+val get_current_chat : t -> Read.message list
 
 (** [change_state input st] is [Valid t] if [input] from the current menu in 
     [st] is not invalid. An input can be invalid for several reasons:

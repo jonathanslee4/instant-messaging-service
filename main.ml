@@ -1,7 +1,7 @@
 open Command
 open State
-open Readingjson
-open Jmodule
+open Read
+open Write
 
 (** [print_contacts st con_list] is a unit that prints every element of 
     con_list that is not the current user id. *)
@@ -86,15 +86,9 @@ let print_new_username st =
 
 (** [print_new_password st] is a unit that prints a message asking for a new 
     password. *)
-let print_new_password1 st = 
+let print_new_password st = 
   ANSITerminal.(print_string [blue]
                   "\nPlease create a one-word password.\n>> ") 
-
-(** [print_new_password2 st] is a unit prints a message asking for a password 
-    confirmation. *)
-let print_new_password2 st = 
-  ANSITerminal.(print_string [blue]
-                  "\nPlease enter the password again to confirm.\n>> ")
 
 (** [print_plaza st] is a unit that prints a message asking who the user 
     would like to chat with, along with the user's friends. *)
@@ -199,7 +193,7 @@ let rec transition st =
        | Invalid -> failwith "should not get here")
     | New_Username str -> 
       (match change_state str st with 
-       | Valid t -> print_new_password1 st; transition t
+       | Valid t -> print_new_password st; transition t
        | Invalid -> ANSITerminal.(print_string [magenta]
                                     "\n\nSorry! That username is already \
                                      taken! Try typing another!\n\n>> ");

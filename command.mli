@@ -1,6 +1,9 @@
 (**
-   Parses the user's input into the correct command. 
-
+   Parses the user's input into the correct command. Empty inputs and inputs
+   with an incorrect number of words are returned as exceptions. Otherwise,
+   a command is outputted depending on the current menu. Certain commands are
+   accompanied by strings or a string tuple, which carry information on what the
+   user typed in.
 *)
 
 (** The type [command] represents a player input which depends on the current
@@ -71,7 +74,8 @@ exception Malformed_New_Password
     Connect menu. *)
 exception Malformed_Connect
 
-(** [parse menuid userid str] parses a player's input [str] into a [command]
+(** [parse current_menu_id current_user_id str] parses a player's input [str]
+    into a [command]
     given [menuid] and [userid] as follows. 
     Examples: 
     - [parse "how have you been?"] within the Chat menu is 
@@ -82,11 +86,12 @@ exception Malformed_Connect
     Requires: [str] contains only letters, numbers, and space 
     characters.
 
-    Raises: [Empty] if [str] is the empty string or contains only spaces. 
+    Raises: [Empty_<spec>] if [str] is the empty string or contains only spaces,
+    where <spec> depends on the current menu. 
 
-    Raises: [Malformed_<spec>] if the command is 
-    malformed, where [spec] depends on the specific menu/case that caused the 
-    malformed command to occur. A command is malformed if the phrase is more
-    than one word in Login, LoginVerify, Plaza, SignUpUsername, or SignUpPassword,
-    or more than two words in Connect. *)
+    Raises: [Malformed_<spec>] if the input is 
+    malformed, where [spec] depends on the specific menu/case in which the input
+    is encountered. An input is malformed if the input is more
+    than one word in Login, LoginVerify, Plaza, SignUpUsername, or 
+    SignUpPassword, or more than two words in Connect. *)
 val parse : string -> string -> string -> command

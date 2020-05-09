@@ -1,8 +1,8 @@
 (*****************************  TEST PLAN  **********************************)
 (*
-   OUnit Tested Modules: Readingjson***, Command
-   Manually Tested Modules: Jmodule, State, Main
-   **** Note: In Readingjson we manually tested 3 functions that could not be
+   OUnit Tested Modules: Read***, Command
+   Manually Tested Modules: Write, State, Main
+   **** Note: In Read we manually tested 3 functions that could not be
               tested with OUnit:
               1) get_accepted_friends
               2) get_pending_friends 
@@ -16,7 +16,7 @@
 
   We implemented a glass box approach coupled with manual testing to catch any 
   errors in our code. We used OUnit test cases to seek statement and condition 
-  coverage in our glass box testing, which we applied to our Readingjson, State, 
+  coverage in our glass box testing, which we applied to our Read, State, 
   and Command modules. Through our test cases, we explicitly tested all 
   functions in those modules that featured types we could readily add in our 
   make OUnit test functions. We were also sure to implicitly test functions 
@@ -37,7 +37,7 @@
   change to reflect new messages sent between users, friends requests sent and 
   denied, etc. For instance, functions which examine the contents of files such 
   as "afp.json" or "logindetails.json" cannot be expected to output the same
-  result each time they are called. Unlike the functions in Readingjson, 
+  result each time they are called. Unlike the functions in Read, 
   we could not create test jsons for those functions because the names of the 
   files being examined were explicitly written in their function bodies. 
   Similarly, we could not test functions which created new json files because
@@ -68,19 +68,21 @@ system is low enough to demonstrate the correctness of our system.
 *)
 
 open OUnit2
-open Jmodule
-open Readingjson
+open Write
+open Read
 open State
 open Command
 
 let identity x = x
 
-(************************** Readingjson Tests  ******************************)
+(************************** Read Tests  ******************************)
 
 let yojsont1 = Yojson.Basic.from_file "testconvo.json"
 let yojsont2 = Yojson.Basic.from_file "testaccounts.json"
 let convo1 =  "testconvo.json" |> Yojson.Basic.from_file  |> convo_from_json
-let accounts1 = "logindetails.json" |> Yojson.Basic.from_file  |> accounts_from_json
+let accounts1 = "logindetails.json" 
+                |> Yojson.Basic.from_file  
+                |> accounts_from_json
 
 let yojsontafp = Yojson.Basic.from_file "testafp.json"
 let yojsontpfp = Yojson.Basic.from_file "testpfp.json"
@@ -164,7 +166,7 @@ let make_pending_friend_pairs_from_json_test
   name >:: (fun _ -> 
       assert_equal expected_output (pending_friend_pairs_from_json input))
 
-let readingjson_tests = [
+let read_tests = [
   make_get_sent_by_test "get sent_by 1st sender" (List.nth convo1 0)
     "user2";
   make_get_sent_by_test "get sent_by 2nd sender" (List.nth convo1 1)
@@ -300,7 +302,7 @@ let command_exn_tests = [
 
 let suite =
   "test suite for ims"  >::: List.flatten [
-    readingjson_tests;
+    read_tests;
     command_parse_tests;
     command_exn_tests;
   ]

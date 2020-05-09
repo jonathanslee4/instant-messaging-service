@@ -1,10 +1,8 @@
 (** 
-    Handles the modification of json files necessary for maintaining changes
-    in state. 
-
-    This module includes functionality for writing and removing information 
-    from pre-existing jsonss, saving json files, and creating new json files. 
-
+    This modules handles the modification of json files to maintain changes
+    in state. It also handles the creation of conversation json files when 
+    necessary. These json files include logindetails.json, afp.json, pfp.json,
+    and any conversation jsons.
 *)
 
 

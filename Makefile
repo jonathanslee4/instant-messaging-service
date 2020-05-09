@@ -1,5 +1,5 @@
 # 
-MODULES=jmodule readingjson state command main
+MODULES=write read state command main
 
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
@@ -38,4 +38,4 @@ docs-private: build
 
 clean:
 	ocamlbuild -clean
-	rm -rf doc.public doc.private jmodule.zip
+	rm -rf doc.public doc.private
