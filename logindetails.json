@@ -1,5 +1,25 @@
 {
-  "users": [{"username":"helen","password":"tortoise"},
+  "users": [
+    {
+      "username": "testuser3",
+      "password": "testpassword3"
+    },
+    {
+      "username": "testuser2",
+      "password": "testpassword2"
+    },
+    {
+      "username": "testuser1",
+      "password": "testpassword1"
+    },
+    {
+      "username": "chris",
+      "password": "minecraft"
+    },
+    {
+      "username": "helen",
+      "password": "tortoise"
+    },
     {
       "username": "bob",
       "password": "bob"

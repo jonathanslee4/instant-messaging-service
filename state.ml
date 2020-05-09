@@ -1,5 +1,4 @@
 open Readingjson
-open Readingaccounts
 open Jmodule
 
 type menu = 
@@ -166,20 +165,20 @@ let interact_with_request tag_id input st =
   if tag_id = "add" then 
     if not(user_exists input) then Invalid_Existless else
     if List.mem input accepted_friends then Invalid_Add_Already_Friended else
-    if List.mem ((id_creator st.current_user input)^"&"^
+    if List.mem ((id_creator st.current_user input)^"_"^
                  st.current_user) pending_friends_with_tag then
       Invalid_Add_Already_Added else
-    if List.mem ((id_creator st.current_user input)^"&"^
+    if List.mem ((id_creator st.current_user input)^"_"^
                  input) pending_friends_with_tag then Invalid_Add_Pending else
       let pfpnum = 
         "pfp.json" |> Yojson.Basic.from_file |> 
         pending_friend_pairs_from_json |> List.length in
       if pfpnum = 0 then 
         (pfp_empty 
-           ((id_creator input st.current_user)^"&"^st.current_user)) 
+           ((id_creator input st.current_user)^"_"^st.current_user)) 
       else
         (pfp_add 
-           ((id_creator input st.current_user)^"&"^st.current_user));
+           ((id_creator input st.current_user)^"_"^st.current_user));
       PValid {
         current_menu = Connect;
         current_chat = st.current_chat;
@@ -190,6 +189,7 @@ let interact_with_request tag_id input st =
   if tag_id = "accept" then
     if not(List.mem input pending_friends) then Invalid_Existless else
       (afp_add (id_creator input st.current_user);
+       (pfp_remove (id_creator st.current_user input^"_"^input));
        PValid {
          current_menu = Connect;
          current_chat = st.current_chat;
@@ -199,7 +199,7 @@ let interact_with_request tag_id input st =
        }) else
   if tag_id = "deny" then
     if not(List.mem input pending_friends) then Invalid_Existless else
-      (pfp_remove (id_creator st.current_user input^"&"^input);
+      (pfp_remove (id_creator st.current_user input^"_"^input);
        PValid {
          current_menu = Connect;
          current_chat = st.current_chat;

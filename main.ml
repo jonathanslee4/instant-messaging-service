@@ -49,7 +49,7 @@ let rec print_convo texts st =
       (output_receiver_line sender msg; (print_convo xs st))
 
 (** [print_help] is a unit that prints commands used to help user
-navigate system.*)
+    navigate system.*)
 let print_help() =
   ANSITerminal.(print_string [white]
                   "\nHere's some helpful tips for running our system:\n");

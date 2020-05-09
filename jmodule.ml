@@ -10,14 +10,14 @@ let rec contains list item =
   |h::t-> if h=item then true else contains t item
 
 let id_creator (name1:string) (name2:string)=
-  if name1<name2 then name1^"&"^name2
-  else name2^"&"^name1
+  if name1<name2 then name1^"_"^name2
+  else name2^"_"^name1
 
 let json_creator (id:string)=
   id^".json"
 
 (** [directory_exists json_name] is a boolean expression denoting whether 
-file of name [json_name] is in the working directory.*)
+    file of name [json_name] is in the working directory.*)
 let directory_exists (json_name:string)=
   Sys.file_exists json_name
 
@@ -35,7 +35,7 @@ let save (file:string) (text:string) =
   close_out channel
 
 (** [existing_convo sent_by text id] is a unit that saves data to [id] if it
-already exists in the current working directory.*)
+    already exists in the current working directory.*)
 let existing_convo (sent_by:string) (text:string) (id:string)=
   let file_contents = entire_file (json_creator id) in
   let bracket_char= String.index file_contents '[' in
@@ -45,7 +45,7 @@ let existing_convo (sent_by:string) (text:string) (id:string)=
   save (json_creator id) (first^second^third)
 
 (** [new_convo sent_by text id] is a unit that saves data to [id] if it
-does not exist in the current working directory. *)
+    does not exist in the current working directory. *)
 let new_convo (sent_by:string) (text:string) (id:string)=
   let string_to_print = 
     "{\"text history\": [{\"sent_by\":\""^sent_by^"\", \"text\":\""^text^"\"}]}"
@@ -81,7 +81,7 @@ let pfp_empty (new_contact:string)=
   save ("pfp.json") (first^"\""^new_contact^"\""^third)
 
 (** [replace input output] is a string that sees [input] replace all occurences of [output]
-in a given string. *)
+    in a given string. *)
 let replace input output =
   Str.global_replace (Str.regexp_string input) output
 
