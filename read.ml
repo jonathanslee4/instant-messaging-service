@@ -84,15 +84,18 @@ let rec filter_triple s triplelist =
       filter_triple s tl
 
 let get_accepted_friends username =
-  let slist = 
-    accepted_friend_pairs_from_json (Yojson.Basic.from_file "afp.json") in
-  slist |> expand |> List.map list_to_pair |> filter_pair username
+  (* let slist = 
+     accepted_friend_pairs_from_json (Yojson.Basic.from_file "afp.json") in
+     slist |> expand |> List.map list_to_pair |> filter_pair username *)
+  "afp.json" |> Yojson.Basic.from_file |> accepted_friend_pairs_from_json 
+  |> expand |> List.map list_to_pair |> filter_pair username
 
 let get_pending_friends username =
-  let slist = 
-    pending_friend_pairs_from_json (Yojson.Basic.from_file "pfp.json") in
-  (* if slist = [] then [] else *)
-  slist |> expand |> List.map list_to_triple |> filter_triple username
+  (* let slist = 
+     pending_friend_pairs_from_json (Yojson.Basic.from_file "pfp.json") in
+     slist |> expand |> List.map list_to_triple |> filter_triple username *)
+  "pfp.json" |> Yojson.Basic.from_file |> pending_friend_pairs_from_json |>
+  expand |> List.map list_to_triple |> filter_triple username
 
 (* [accounts_from_login_json j] is a unit that takes [j] and parses data to
    type account. *)
@@ -111,8 +114,10 @@ let rec usernames_from_accounts acclist =
   | {username = usr; password = pwd}:: tl -> usr :: usernames_from_accounts tl
 
 let user_exists usr =
-  List.mem usr ("logindetails.json" |> Yojson.Basic.from_file |> 
-                accounts_from_json |> usernames_from_accounts)
+  List.mem usr ("logindetails.json" 
+                |> Yojson.Basic.from_file 
+                |> accounts_from_json 
+                |> usernames_from_accounts)
 
 let rec is_verified_password usr pwd actlist = 
   match actlist with

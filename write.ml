@@ -91,31 +91,15 @@ let pfp_empty (new_contact:string)=
 let replace input output =
   Str.global_replace (Str.regexp_string input) output
 
-(****** BEGIN OLD STUFF  *)
-
-(** [replace input output] is a string that sees [input] replace all occurences of [output]
-    in a given string. *)
-(* let replace input output =
-   Str.global_replace (Str.regexp_string input) output
-
-   let pfp_remove (to_remove:string)=
-   (* let pfp_contents = entire_file "pfp.json" in
-     let removed1 = replace to_remove "" pfp_contents in
-     let removed2 = replace "\"\"," "" removed1 in
-     save ("pfp.json") removed2 *)
-   let pfp_contents = entire_file "pfp.json" in
-   let removed1 = replace to_remove "" pfp_contents in 
-   if (String.contains pfp_contents ',')
-   then (save ("pfp.json") (replace "\"\"," "" removed1))
-   else (save ("pfp.json") (replace "\"\"" "" removed1)) *)
-
-(******* END OLD STUFF  *)
+(**[s_contains] is a boolean that is true if [s1] contains [s2].*) 
 let s_contains s1 s2 =
   let re = Str.regexp_string s2
   in
   try ignore (Str.search_forward re s1 0); true
   with Not_found -> false
 
+(**[remove_last str] is a string that puts a ',' between all pairs of '"' 
+   in [str]. *)
 let remove_last str =
   let last_ind = String.rindex str ',' in
   let first = Str.string_before str last_ind in
@@ -123,10 +107,6 @@ let remove_last str =
   first^second
 
 let pfp_remove (to_remove:string)=
-  (* let pfp_contents = entire_file "pfp.json" in
-     let removed1 = replace to_remove "" pfp_contents in
-     let removed2 = replace "\"\"," "" removed1 in
-     save ("pfp.json") removed2 *)
   let pfp_contents = entire_file "pfp.json" in
   let removed1 = (replace to_remove "" pfp_contents) in 
   if (s_contains removed1 "\"\",")

@@ -11,7 +11,7 @@ let rec print_contacts st con_list =
   |hd::tl-> 
     if hd = get_current_user st then print_contacts st tl
     else
-      (print_endline(hd); 
+      (print_endline hd; 
        print_contacts st tl)
 
 (** [output_sender_line text] is a unit that prints the sender's [text] to the 
@@ -20,7 +20,7 @@ let rec print_contacts st con_list =
     in color. *)
 let output_sender_line text =
   let (w,h) = ANSITerminal.size() in
-  let length = (String.length text + 4) in
+  let length = String.length text + 4 in
   ANSITerminal.move_cursor (w-length) 0;
   ANSITerminal.(print_string [on_blue]("Me: " ^ text));
   print_endline("");
@@ -78,8 +78,8 @@ let print_login () =
 let print_login_password st  = 
   ANSITerminal.(print_string [green]
                   ("\nWelcome " ^ get_current_user st ^ "! \
-                                                         What is your \
-                                                         password?\n>> ") )
+                                                         What is your password?
+                                                         \n>> "))
 
 (** [print_new_username st] is a unit that prints a message asking for a new 
     username. *)
@@ -91,22 +91,21 @@ let print_new_username st =
 (** [print_new_password st] is a unit that prints a message asking for a new 
     password. *)
 let print_new_password st = 
-  ANSITerminal.(print_string [blue]
-                  "\nPlease create a one-word password.\n>> ") 
+  ANSITerminal.(print_string [blue] "\nPlease create a one-word password.\n>> ") 
 
 (** [print_plaza st] is a unit that prints a message asking who the user 
     would like to chat with, along with the user's friends. *)
 let print_plaza st =                      
   ANSITerminal.(print_string [cyan] "\nWho would you like to chat with? \
                                      Type /back to log out.\n");
-  print_contacts st ((get_current_contacts st));
+  st |> get_current_contacts |> print_contacts st;
   ANSITerminal.(print_string [cyan] "\n>> ")
 
 (** [print_connect st] is a unit that prints a message instructing the user
     on how to deal with friend requests. *)
 let print_connect st =
   let friend_request_num = 
-    List.length (get_pending_friends (get_current_user st)) in
+    st |> get_current_user |> get_pending_friends |> List.length in
   if friend_request_num = 0 then
     ANSITerminal.(print_string [yellow]
                     "\nYou haven't received any new friend requests yet.\n\
@@ -117,12 +116,12 @@ let print_connect st =
   else if friend_request_num = 1 then
     (ANSITerminal.(print_string [yellow] 
                      "\nYou have a pending friend request from:\n"); 
-     print_contacts st (get_pending_friends (get_current_user st));
+     st |> get_current_user |> get_pending_friends |> print_contacts st;           
      ANSITerminal.(print_string [yellow] "\n>> "))
   else 
     (ANSITerminal.(print_string [yellow] 
                      "\nYou have pending friend requests from:\n"); 
-     print_contacts st (get_pending_friends (get_current_user st));
+     st |> get_current_user |> get_pending_friends |> print_contacts st;
      ANSITerminal.(print_string [yellow] "\n>> "))
 
 let print_successful_add str = 
@@ -152,8 +151,7 @@ let print_whole_chat st=
   ANSITerminal.erase Screen;
   ANSITerminal.set_cursor 1 1;
   print_convo (st |> get_current_chat |> List.rev) st;
-  ANSITerminal.(print_string [white] 
-                  "\n>> ")
+  ANSITerminal.(print_string [white] "\n>> ")
 
 (** [print_new_message st] is a unit that prints the most recent
     text message. *)
@@ -177,7 +175,7 @@ let print_exception_message msg =
   ANSITerminal.(print_string [red] "\n>> ")
 
 (** [transition st] is a unit that reads line and matches against the resulting
-    command given st. If the command is empty, malformed, or invalid, a 
+    command given [st]. If the command is empty, malformed, or invalid, a 
     warning message is printed and transition is run again. 
     Otherwise, transition prints an appropriate message and runs 
     again with the updated state.*)
@@ -235,7 +233,6 @@ let rec transition st =
                                      ("\nIncorrect password. \
                                        \n>> ")); transition st)
     | Chat_With str ->
-      (* display contents of previous chat, reverse list *)
       (match change_state str st with
        | Valid t -> 
          print_whole_chat t; transition t
@@ -246,7 +243,6 @@ let rec transition st =
                                      friend!\n>> ");
          transition st)
     | Send str ->
-      (* display most recent chat *)
       (match change_state str st with
        | Valid t -> 
          (print_new_message t);
@@ -259,9 +255,9 @@ let rec transition st =
     | Move_Request (tag,str) -> 
       (match interact_with_request tag str st with
        | PValid t -> 
-         if tag = "add" then print_successful_add str
-         else if tag = "accept" then print_successful_accept str
-         else if tag = "deny" then print_successful_deny str;
+         if tag = "add" then print_successful_add str else 
+         if tag = "accept" then print_successful_accept str else 
+         if tag = "deny" then print_successful_deny str;
          transition t
        | Invalid_Unrecognizable -> 
          ANSITerminal.(print_string [magenta]
@@ -298,12 +294,9 @@ let rec transition st =
            t |> get_current_menu |> get_menu_id in
          ANSITerminal.erase Screen;
          ANSITerminal.set_cursor 1 1;
-         (if next_menu_id = "login" then
-            (print_login ()) else
-          if next_menu_id = "plaza" then
-            (print_plaza t) else
-          if next_menu_id = "sign_up_username" then 
-            (print_new_username t) else
+         (if next_menu_id = "login" then print_login () else
+          if next_menu_id = "plaza" then print_plaza t else
+          if next_menu_id = "sign_up_username" then print_new_username t else
             exit 0);
          transition t
        | Invalid -> failwith "should not happen")

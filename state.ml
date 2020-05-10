@@ -120,7 +120,9 @@ let change_state input st =
         current_user = st.current_user;
         current_receiver = "";
       } else
-    if (List.mem input (get_accepted_friends st.current_user)) then 
+    if 
+      st.current_user |> get_accepted_friends |> List.mem input
+    then 
       let filename = 
         st.current_user |> id_creator input |> json_creator in
       (if (Sys.file_exists filename) then
