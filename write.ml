@@ -91,16 +91,52 @@ let pfp_empty (new_contact:string)=
 let replace input output =
   Str.global_replace (Str.regexp_string input) output
 
+(****** BEGIN OLD STUFF  *)
+
+(** [replace input output] is a string that sees [input] replace all occurences of [output]
+    in a given string. *)
+(* let replace input output =
+   Str.global_replace (Str.regexp_string input) output
+
+   let pfp_remove (to_remove:string)=
+   (* let pfp_contents = entire_file "pfp.json" in
+     let removed1 = replace to_remove "" pfp_contents in
+     let removed2 = replace "\"\"," "" removed1 in
+     save ("pfp.json") removed2 *)
+   let pfp_contents = entire_file "pfp.json" in
+   let removed1 = replace to_remove "" pfp_contents in 
+   if (String.contains pfp_contents ',')
+   then (save ("pfp.json") (replace "\"\"," "" removed1))
+   else (save ("pfp.json") (replace "\"\"" "" removed1)) *)
+
+(******* END OLD STUFF  *)
+let s_contains s1 s2 =
+  let re = Str.regexp_string s2
+  in
+  try ignore (Str.search_forward re s1 0); true
+  with Not_found -> false
+
+let remove_last str =
+  let last_ind = String.rindex str ',' in
+  let first = Str.string_before str last_ind in
+  let second = Str.string_after str (last_ind+1) in
+  first^second
+
 let pfp_remove (to_remove:string)=
   (* let pfp_contents = entire_file "pfp.json" in
      let removed1 = replace to_remove "" pfp_contents in
      let removed2 = replace "\"\"," "" removed1 in
      save ("pfp.json") removed2 *)
   let pfp_contents = entire_file "pfp.json" in
-  let removed1 = replace to_remove "" pfp_contents in 
-  if (String.contains pfp_contents ',')
+  let removed1 = (replace to_remove "" pfp_contents) in 
+  if (s_contains removed1 "\"\",")
   then (save ("pfp.json") (replace "\"\"," "" removed1))
-  else (save ("pfp.json") (replace "\"\"" "" removed1))
+  else (
+    let removed2 = (replace "\"\"" "" removed1) in
+    if (String.contains removed2 ',')
+    then (save ("pfp.json") (remove_last removed2))
+    else (save ("pfp.json") removed2)
+  )
 
 (* THE ACCOUNT JSON EDITING IS BELOW *)
 

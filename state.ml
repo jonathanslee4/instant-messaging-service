@@ -55,6 +55,7 @@ type result_prime = PValid of t
                   | Invalid_Add_Already_Added
                   | Invalid_Add_Already_Friended 
                   | Invalid_Add_Pending
+                  | Invalid_Add_Self
                   | Invalid_Unrecognizable
 
 let change_state input st = 
@@ -158,7 +159,7 @@ let change_state input st =
     failwith "should not happen"
 
 let interact_with_request tag_id input st = 
-  let accepted_friends = get_accepted_friends input in 
+  let accepted_friends = get_accepted_friends st.current_user in 
   let pending_friends = get_pending_friends st.current_user in
   let pending_friends_with_tag = "pfp.json" |> Yojson.Basic.from_file |> 
                                  pending_friend_pairs_from_json in
@@ -170,6 +171,7 @@ let interact_with_request tag_id input st =
       Invalid_Add_Already_Added else
     if List.mem ((id_creator st.current_user input)^"&"^
                  input) pending_friends_with_tag then Invalid_Add_Pending else
+    if input = st.current_user then Invalid_Add_Self else
       let pfpnum = 
         "pfp.json" |> Yojson.Basic.from_file |> 
         pending_friend_pairs_from_json |> List.length in

@@ -43,8 +43,8 @@ let rec print_convo texts st =
   |x::xs-> 
     let sender = get_sent_by x in
     let msg = get_text x in 
-    if(sender = get_current_user st) then (output_sender_line msg;
-                                           print_convo xs st)
+    if (sender = get_current_user st) then 
+      (output_sender_line msg; print_convo xs st)
     else 
       (output_receiver_line sender msg; (print_convo xs st))
 
@@ -52,22 +52,26 @@ let rec print_convo texts st =
     navigate system.*)
 let print_help() =
   ANSITerminal.(print_string [white]
-                  "\nHere's some helpful tips for running our system:\n");
+                  "\nHere's all you need to know to run our system:\n\n");
+  ANSITerminal.(print_string [red]
+                  "/quit\nQuit the program.\n");
   ANSITerminal.(print_string [magenta]
-                  "To quit or leave:\n/quit\n/back");
-  ANSITerminal.(print_string [magenta]
-                  "\nTo create a new account:\n/signup");
-  ANSITerminal.(print_string [magenta]
-                  "\nTo see friend requests:\n/connect");
-  ANSITerminal.(print_string [magenta]
-                  "\nTo interact with friend requests:\nadd (friend's name)\naccept (friend's name)\ndeny (friend's name)\n\n");
+                  "\n/back\nGo to the previous menu.\n");
+  ANSITerminal.(print_string [yellow]
+                  "\n/signup\nCreate a new account.\n");
   ANSITerminal.(print_string [green]
-                  ">> ")
+                  "\n/connect\nView friend requests. Type add, accept, or deny \
+                   followed by a name to interact with requests.\n");
+  ANSITerminal.(print_string [blue]
+                  "\n/help\nBring up this menu.\n");
+  ANSITerminal.(print_string [white]
+                  "\n>> ")
 
 (** [print_login] is a unit that prints the login menu opening text. *)
 let print_login () =
   ANSITerminal.(print_string [green]
-                  "\nWelcome to the login page. What is your username?\n>> ")
+                  "\nWelcome to the login page. What is your username? Enter \
+                   /help to view a description of valid commands.\n>> ")
 
 (** [print_login_password st] is a unit that prints a message asking for the 
     current user's password. *)
@@ -124,7 +128,7 @@ let print_connect st =
 let print_successful_add str = 
   ANSITerminal.(print_string [yellow] ("\n"^str^" has been sent a friend \
                                                  request. We'll let you know \
-                                                 as soon as she accepts!\n>> "))
+                                                 as soon as they accept!\n>> "))
 
 let print_successful_accept str = 
   ANSITerminal.(print_string [green]
@@ -278,9 +282,14 @@ let rec transition st =
                           this user! Type accept <name> to accept the request.\
                           \n>> ");
          transition st
+       | Invalid_Add_Self -> 
+         ANSITerminal.(print_string [magenta]
+                         "\nYou can't send a friend request to yourself.\
+                          \n>> ");
+         transition st
        | Invalid_Existless -> 
          ANSITerminal.(print_string [magenta]
-                         "\nThis user doesn't exist. \n>> ");
+                         "\nInvalid command. Try something else.\n>> ");
          transition st)
     | Back ->
       (match go_back st with
@@ -315,11 +324,11 @@ let rec transition st =
                              Try something more meaningful.";
     transition st
   | Empty_New_Username -> 
-    print_exception_message "Your username can't be empty";
+    print_exception_message "Your username can't be empty.";
     transition st 
   | Empty_New_Password ->
     print_exception_message "Whoops! You didn't enter anything. \
-                             Enter a valid username to login!";
+                             Enter a new one-word password to login!";
     transition st
   | Empty_Connect ->  
     print_exception_message  "You must type add, accept, or deny followed by a \
@@ -337,13 +346,13 @@ let rec transition st =
                              existing contacts!";
     transition st
   | Malformed_Chat_With_Self -> 
-    print_exception_message "Ummmm you can't chat with yourself! Silly";
+    print_exception_message "You can't chat with yourself! Silly.";
     transition st
   | Malformed_New_Username ->  
-    print_exception_message "Your username can only be one word, no spaces";
+    print_exception_message "Your username can only be one word, no spaces.";
     transition st 
   | Malformed_New_Password ->  
-    print_exception_message "Your password can only be one word no spaces";
+    print_exception_message "Your password can only be one word, no spaces.";
     transition st 
   | Malformed_Connect -> 
     print_exception_message "You must type add, accept, or deny followed by \

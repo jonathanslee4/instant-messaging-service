@@ -29,6 +29,7 @@ type result_prime = PValid of t
                   | Invalid_Add_Already_Added
                   | Invalid_Add_Already_Friended 
                   | Invalid_Add_Pending
+                  | Invalid_Add_Self
                   | Invalid_Unrecognizable
 
 (** [get_current_menu st] is the menu of the instant messaging interface in 

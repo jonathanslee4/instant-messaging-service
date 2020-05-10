@@ -31,35 +31,53 @@
   files which were complete with test users and conversations. We then extracted
   Yojson.Basic.t values from those files to test our Command functions. 
 
-  However, we were unable to use OUnit test cases to test several functions which
-  were responsible for reading and editing json files. Since our project relies 
-  upon storing data within json files, the contents of those files constantly 
-  change to reflect new messages sent between users, friends requests sent and 
-  denied, etc. For instance, functions which examine the contents of files such 
-  as "afp.json" or "logindetails.json" cannot be expected to output the same
-  result each time they are called. Unlike the functions in Read, 
-  we could not create test jsons for those functions because the names of the 
-  files being examined were explicitly written in their function bodies. 
+  However, we were unable to use OUnit test cases to test several functions
+  which were responsible for reading and editing json files. Since our project 
+  relies upon storing data within json files, the contents of those files 
+  constantly change to reflect new messages sent between users, friends 
+  requests sent and denied, etc. For instance, functions which examine the 
+  contents of files such as "afp.json" or "logindetails.json" cannot be expected 
+  to output the same result each time they are called. Unlike the functions in 
+  Read, we could not create test jsons for those functions because the names of 
+  the files being examined were explicitly written in their function bodies. 
   Similarly, we could not test functions which created new json files because
   our test module cannot be expected to generate new, distinctly named files for 
   each run of make test. Thus, our team decided to adopt a manual testing 
   approach to ensure that theprocesses governed by such functions run correctly.
 
   The following is a list of actions we manually performed to test our code:
-    1) Created new accounts, in addition to inputting invalid new usernames and 
-       passwords (including empty and malformed usernames/passwords). 
-       We also attempted to create accounts whose usernames were already taken.
-    2) Sent, accepted, and denied friend requests. We considered edge cases 
-       where you try to send a friend request to someone you already sent a 
-       request to previously, or try to (* TODO ADD ON TO THIS *)
-       We also attempted to input usernames which did not exist.
-    3) Initiated conversations with friends to ensure that messages were being
-       stored and printed properly. 
-    4) Used the /quit and /back functions from each menu.
-    5) Tested empty and malformed inputs from each menu.
+    1) Account creation (SignUpUsername/SignUpPassword)
+      - Create account succesfully with valid username & password
+      - Error message when creating an account w/ username that already exists
+      - Error message when creating account w/ empty username/password
+      - Error message when creating account with username/password that is more 
+        than one word 
+    2) Login/LoginVerify
+      - Login succesfully with valid username & password
+      - Error message when entering a username/password with a space (malformed)
+      - Error message when logging in w/ an invalid username or invalid password
+      - Error message when logging in w/ an empty password or empty password
+    3) Connect 
+      - Succesfully adding a friend who has a registered account
+      - Error message when adding a friend who is not registered 
+      - Error message when adding a friend to who you already added previously
+      - Error message when trying to add yourself as a friend 
+      - Succesfully accept, receive, deny friend requests from someone 
+    4) Plaza/Chat
+      - Error message when trying to chat with yourself 
+      - Error message when trying to chat with a registered account who isn't
+        your friend
+      - Error message when trying to chat with an unregistered username 
+      - Initiated conversations with friends to ensure that messages were being
+        stored and printed properly. 
+    5) Quit/Back/Help Commands
+      - Successfully used /back from each menu. Takes you back to the previous
+        menu. In the Login menu, /back quits the program. 
+      - Succesfully used /quit from each menu. /quit should exit the program. 
+      - Successfully used /help command from each menu 
 
-Our OUnit test module, combined with comprehensive manual testing, guarantees that 
-our instant messaging interface is correct on tested inputs and in tested 
+Our OUnit test module, combined with comprehensive manual testing, guarantees 
+that our instant messaging interface is correct on tested inputs and in tested 
 environments. Neverthless, we do recognize that testing does guarantee 
 correctness on all inputs and environments, only tested ones. However, as 
 detailed above, we extensively test for different possible environments and 
