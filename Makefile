@@ -1,6 +1,5 @@
 # 
 MODULES=write read state command main
-
 OBJECTS=$(MODULES:=.cmo)
 MLS=$(MODULES:=.ml)
 MLIS=$(MODULES:=.mli)
