@@ -3,6 +3,12 @@ open State
 open Read
 open Write
 
+(** [reset_screen] is a unit that clears the screen and resets the terminal 
+    cursor to point back to the top of the screen. *)
+let reset_screen () = 
+  ANSITerminal.erase Screen;
+  ANSITerminal.set_cursor 1 1
+
 (** [print_contacts st con_list] is a unit that prints every element of 
     con_list that is not the current user id. *)
 let rec print_contacts st con_list =
@@ -124,11 +130,15 @@ let print_connect st =
      st |> get_current_user |> get_pending_friends |> print_contacts st;
      ANSITerminal.(print_string [yellow] "\n>> "))
 
+(** [print_successful_add str] is a unit that prints a message after a user 
+    has succesfullyy sent a friend request to [str]. *)
 let print_successful_add str = 
   ANSITerminal.(print_string [yellow] ("\n"^str^" has been sent a friend \
                                                  request. We'll let you know \
                                                  as soon as they accept!\n>> "))
 
+(** [print_successful_accept str] is a unit that prints a message after a user 
+    has succesfully accepted a friend request from [str]. *)
 let print_successful_accept str = 
   ANSITerminal.(print_string [green]
                   ("\nYou're now friends with "^str^"! If you want to start a \
@@ -138,18 +148,18 @@ let print_successful_accept str =
                                                            contacts."));
   ANSITerminal.(print_string [yellow] "\n\n>> ")
 
+(** [print_successful_deny str] is a unit that prints a message after a user 
+    has succesfully denied a friend request from [str]. *)
 let print_successful_deny str = 
   ANSITerminal.(print_string [green]
                   ("\nYou denied "^str^"'s friend request."));
   ANSITerminal.(print_string [yellow] "\n\n>> ")
 
 (** [print_whole_chat st] is a unit that prints the conversation between the 
-    user and the
-    receiver. *)
+    user and the receiver. *)
 let print_whole_chat st=
   print_string "\n";
-  ANSITerminal.erase Screen;
-  ANSITerminal.set_cursor 1 1;
+  reset_screen();
   print_convo (st |> get_current_chat |> List.rev) st;
   ANSITerminal.(print_string [white] "\n>> ")
 
@@ -159,12 +169,9 @@ let print_new_message st=
   (match (get_current_chat st) with
    |[]->print_string ""
    |h::xs-> 
-     (* let (x,y) = ANSITerminal.pos_cursor () in
-        let target2 = (y-10) in *)
      ANSITerminal.move_cursor 0 (-2);
      ANSITerminal.erase Below;
      let msg = get_text h in 
-     (*if(sender = get_current_user st) then *)
      output_sender_line msg; 
      ANSITerminal.(print_string [white] "\n>> "))
 
@@ -174,79 +181,83 @@ let print_exception_message msg =
   ANSITerminal.(print_string [red] ("\n"^msg)); 
   ANSITerminal.(print_string [red] "\n>> ")
 
+(** [print_invalid_contact] is a unit that prints a formatted message for 
+    when a user tries to chat with someone who is not their friend. *)
+let print_invalid_contact () = 
+  ANSITerminal.(print_string [magenta]
+                  "\nYou don't have a contact with \
+                   that name. Type /connect to add \
+                   new contacts, or chat with a \
+                   friend!\n>> ")
+
+(** [print_invalid_username] is a unit that prints a formatted message for when
+    a user tries to login with an unregistered username. *)
+let print_invalid_username () = 
+  ANSITerminal.(print_string [magenta]
+                  ("\nThat username doesn't exist. \ Type " 
+                   ^ {|"/signup" |} ^ "to create a new account. \n>> "))
+
+(** [print_sign_up] is a unit that prints a formatted message for when a user 
+    succesfully creates a new account. *)
+let print_sign_up () = 
+  ANSITerminal.(print_string [green]
+                  "You've successfully created your new account! \
+                   Welcome!\n")
+(** [print_username_taken] is a unit that prints a formatted message for when a
+    username tries to sign up with a username that has already been registered.
+*)
+let print_username_taken () = 
+  ANSITerminal.(print_string [magenta]
+                  "\n\nSorry! That username is already \
+                   taken! Try typing another!\n\n>> ")
+
 (** [transition st] is a unit that reads line and matches against the resulting
     command given [st]. If the command is empty, malformed, or invalid, a 
     warning message is printed and transition is run again. 
     Otherwise, transition prints an appropriate message and runs 
-    again with the updated state.*)
+    again with the updated state. 
+*)
 let rec transition st = 
   try (
-    let menu = st |> State.get_current_menu in 
-    let command = (Command.parse (State.get_menu_id menu)
+    let menu = st |> get_current_menu in 
+    let command = (parse (get_menu_id menu)
                      (get_current_user st) (read_line ())) in
     match command with
-    | Current -> (print_help(); transition st)
+    | Current -> print_help(); transition st
     | Sign_Up -> 
       (match change_state "create account" st with 
-       | Valid t ->
-         ANSITerminal.erase Screen;
-         ANSITerminal.set_cursor 1 1;
-         print_new_username st; transition t
+       | Valid t -> reset_screen(); print_new_username st; transition t
        | Invalid -> failwith "should not get here")
     | New_Username str -> 
       (match change_state str st with 
        | Valid t -> print_new_password st; transition t
-       | Invalid -> ANSITerminal.(print_string [magenta]
-                                    "\n\nSorry! That username is already \
-                                     taken! Try typing another!\n\n>> ");
-         transition st
-      )
+       | Invalid -> print_username_taken(); transition st)
     | New_Password str -> 
       (match change_state str st with 
-       | Valid t -> ANSITerminal.(print_string [green]
-                                    "You've successfully created \
-                                     your new account! Welcome!\n"); 
-         ANSITerminal.erase Screen;
-         ANSITerminal.set_cursor 1 1;
-         print_login ();transition t 
-       | Invalid -> failwith ("should not get here ")
-      )
+       | Valid t -> 
+         reset_screen(); print_sign_up(); print_login (); transition t 
+       | Invalid -> failwith "should not get here ")
     | Login_As str -> 
       (match change_state str st with
-       | Valid t -> 
-         print_login_password t; transition t
-       | Invalid -> ANSITerminal.(print_string [magenta]
-                                    ("\nThat username doesn't exist. \
-                                      Type " ^ "/signup " ^ "to \
-                                                             create a new \
-                                                             account. \n>> "));
-         transition st)
+       | Valid t -> print_login_password t; transition t
+       | Invalid -> print_invalid_username(); transition st)
     | Login_Password str ->
       (match change_state str st with
        | Valid t -> 
-         ANSITerminal.erase Screen;
-         ANSITerminal.set_cursor 1 1;
-         ANSITerminal.(print_string [green]
-                         "\nYou are now logged in!\n");print_plaza t; 
+         reset_screen();
+         ANSITerminal.(print_string [green] "\nYou are now logged in!\n");
+         print_plaza t; 
          transition t
-       | Invalid ->  ANSITerminal.(print_string [red]
-                                     ("\nIncorrect password. \
-                                       \n>> ")); transition st)
+       | Invalid ->  
+         ANSITerminal.(print_string [red] ("\nIncorrect password.\n>> ")); 
+         transition st)
     | Chat_With str ->
       (match change_state str st with
-       | Valid t -> 
-         print_whole_chat t; transition t
-       | Invalid -> ANSITerminal.(print_string [magenta]
-                                    "\nYou don't have a contact with \
-                                     that name. Type /connect to add \
-                                     new contacts, or chat with a \
-                                     friend!\n>> ");
-         transition st)
+       | Valid t -> print_whole_chat t; transition t
+       | Invalid -> print_invalid_contact(); transition st)
     | Send str ->
       (match change_state str st with
-       | Valid t -> 
-         (print_new_message t);
-         transition t
+       | Valid t -> print_new_message t; transition t
        | Invalid -> failwith "should not happen send")
     | Open_Requests ->
       (match change_state "open_requests" st with 
@@ -290,10 +301,8 @@ let rec transition st =
     | Back ->
       (match go_back st with
        | Valid t -> 
-         let next_menu_id = 
-           t |> get_current_menu |> get_menu_id in
-         ANSITerminal.erase Screen;
-         ANSITerminal.set_cursor 1 1;
+         let next_menu_id = t |> get_current_menu |> get_menu_id in
+         reset_screen();
          (if next_menu_id = "login" then print_login () else
           if next_menu_id = "plaza" then print_plaza t else
           if next_menu_id = "sign_up_username" then print_new_username t else
@@ -328,11 +337,10 @@ let rec transition st =
                               name.";
     transition st
   | Malformed_Login_Id -> 
-    print_exception_message "That username doesn't exist.";
+    print_exception_message "Usernames can't have any spaces. Try again!";
     transition st
   | Malformed_Login_Password -> 
-    print_exception_message "Passwords should only have one space, so that \
-                             can't be it.";
+    print_exception_message "Passwords can't have spaces. Try again!.";
     transition st
   | Malformed_Chat_With ->
     print_exception_message "Uh oh that person doesn't exist. Try one of your \
@@ -355,8 +363,7 @@ let rec transition st =
 (** [main ()] is a unit that prompts for the instant messaging interface to 
     play, then starts it. *)
 let main () =
-  ANSITerminal.erase Screen;
-  ANSITerminal.set_cursor 1 1;
+  reset_screen();
   let state = init_state in
   print_login ();
   transition state 

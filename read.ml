@@ -114,10 +114,8 @@ let rec usernames_from_accounts acclist =
   | {username = usr; password = pwd}:: tl -> usr :: usernames_from_accounts tl
 
 let user_exists usr =
-  List.mem usr ("logindetails.json" 
-                |> Yojson.Basic.from_file 
-                |> accounts_from_json 
-                |> usernames_from_accounts)
+  List.mem usr ("logindetails.json" |> Yojson.Basic.from_file 
+                |> accounts_from_json |> usernames_from_accounts)
 
 let rec is_verified_password usr pwd actlist = 
   match actlist with

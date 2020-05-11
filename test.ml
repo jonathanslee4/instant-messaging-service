@@ -98,7 +98,7 @@ let identity x = x
 let yojsont1 = Yojson.Basic.from_file "testconvo.json"
 let yojsont2 = Yojson.Basic.from_file "testaccounts.json"
 let convo1 =  "testconvo.json" |> Yojson.Basic.from_file  |> convo_from_json
-let accounts1 = "logindetails.json" 
+let accounts1 = "testaccounts.json" 
                 |> Yojson.Basic.from_file  
                 |> accounts_from_json
 

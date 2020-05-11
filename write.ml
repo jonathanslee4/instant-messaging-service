@@ -3,15 +3,8 @@ open Yojson.Basic.Util
 open Printf
 open Str
 
-(** [contains list item] is a boolean expression denoting whether [list] contains [item]. *)
-let rec contains list item =
-  match list with
-  |[]-> false
-  |h::t-> if h=item then true else contains t item
-
 let id_creator (name1:string) (name2:string)=
-  if name1<name2 then name1^"&"^name2
-  else name2^"&"^name1
+  if name1<name2 then name1^"&"^name2 else name2^"&"^name1
 
 let json_creator (id:string)=
   id^".json"
@@ -24,15 +17,13 @@ let directory_exists (json_name:string)=
 (** [entire_file file_name] is a string of the contents of [file_name]. *)
 let entire_file (file_name:string)=
   let ch  = open_in file_name in
-  let s = really_input_string ch (in_channel_length ch) in
-  close_in ch;
-  s
+  let s = really_input_string ch (in_channel_length ch) in 
+  close_in ch; s
 
 (** [save file next] is a unit that overwrites [file] with [text]. *)
 let save (file:string) (text:string) =
-  let channel = open_out file in
-  output_string channel text;
-  close_out channel
+  let channel = open_out file in 
+  output_string channel text; close_out channel
 
 (** [existing_convo sent_by text id] is a unit that saves data to [id] if it
     already exists in the current working directory.*)
@@ -49,12 +40,10 @@ let existing_convo (sent_by:string) (text:string) (id:string)=
 let new_convo (sent_by:string) (text:string) (id:string)=
   let string_to_print = 
     "{\"text history\": [{\"sent_by\":\""^sent_by^"\", \"text\":\""^text^"\"}]}"
-  in
-  save (json_creator id) (string_to_print)
+  in save (json_creator id) (string_to_print)
 
 let editingtext_json (sent_by:string) (text:string) (id:string)=
-  if directory_exists (json_creator id)
-  then existing_convo sent_by text id
+  if directory_exists (json_creator id) then existing_convo sent_by text id
   else new_convo sent_by text id
 
 let afp_add (new_contact:string) =
@@ -86,25 +75,24 @@ let pfp_empty (new_contact:string)=
   let third = Str.string_after contacts_contents (last_square) in
   save ("pfp.json") (first^"\""^new_contact^"\""^third)
 
-(** [replace input output] is a string that sees [input] replace all occurences of [output]
-    in a given string. *)
+(** [replace input output] is a string that sees [input] replace all occurences
+    of [output] in a given string. *)
 let replace input output =
   Str.global_replace (Str.regexp_string input) output
 
-(**[s_contains] is a boolean that is true if [s1] contains [s2].*) 
+(** [s_contains s1 s2] is true if [s2] is found within [s1], and false 
+    otherwise. *) 
 let s_contains s1 s2 =
-  let re = Str.regexp_string s2
-  in
+  let re = Str.regexp_string s2 in
   try ignore (Str.search_forward re s1 0); true
   with Not_found -> false
 
-(**[remove_last str] is a string that puts a ',' between all pairs of '"' 
-   in [str]. *)
+(** [remove_last str] is a string with the ',' character between all pairs of 
+    '"' in [str]. *)
 let remove_last str =
   let last_ind = String.rindex str ',' in
   let first = Str.string_before str last_ind in
-  let second = Str.string_after str (last_ind+1) in
-  first^second
+  let second = Str.string_after str (last_ind+1) in first^second
 
 let pfp_remove (to_remove:string)=
   let pfp_contents = entire_file "pfp.json" in
@@ -115,10 +103,18 @@ let pfp_remove (to_remove:string)=
     let removed2 = (replace "\"\"" "" removed1) in
     if (String.contains removed2 ',')
     then (save ("pfp.json") (remove_last removed2))
-    else (save ("pfp.json") removed2)
-  )
+    else (save ("pfp.json") removed2))
 
-(* THE ACCOUNT JSON EDITING IS BELOW *)
+(** [string_clist str] is a list of individual characters that make up [str]. *)
+let string_clist str=
+  List.init (String.length str) (String.get str)
+
+(** [char_count clist char num] is an int of the number of times [char] occurs 
+    in [clist]. *)
+let rec char_count clist char num=
+  match  clist with
+  | [] -> num
+  | h::t -> if h=char then char_count t char (num+1) else char_count t char num
 
 let account_json_add username password=
   let file_contents = entire_file ("logindetails.json") in
@@ -127,6 +123,8 @@ let account_json_add username password=
   let third = Str.string_after file_contents (bracket_char+1) in
   let second = "{\"username\":\""^username^"\",\"password\":\""^
                password^"\"}," in
-  save ("logindetails.json") (first^second^third)
+  if (char_count (string_clist file_contents) '}' 0)=1 
+  then save ("logindetails.json") (remove_last (first^second^third))
+  else  save ("logindetails.json") (first^second^third)
 
 
